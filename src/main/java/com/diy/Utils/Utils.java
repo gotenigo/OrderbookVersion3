@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.Locale;
+import java.util.Random;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -29,13 +30,16 @@ public class Utils {
 
         requireNonNull(arg[0].substring(2)); // timestamp
         String instrument=requireNonNull(arg[1].substring(2)); // Instrument
+
         BigDecimal price=new BigDecimal(arg[2].substring(2));  // price
         checkArgument(price.signum()> 0, "price must be positive");
+
         Double quantity=Double.parseDouble((arg[3].substring(2)));  // Qty
         checkArgument(quantity > -1, "quantity must be positive");
-        requireNonNull(arg[4]);
 
-        Side side=null;
+        requireNonNull(arg[4]); // Side
+
+        Side side = null;
         switch(arg[4].substring(2).toLowerCase(Locale.ROOT)) {
 
             case "b":
@@ -68,11 +72,9 @@ public class Utils {
      * @param price
      * @return
      */
-    public static BigDecimal intToBigDecimal(int price){
+    public static BigDecimal intToBigDecimal(double price){
 
         BigDecimal pricecompare = new BigDecimal(price).setScale(2, RoundingMode.DOWN);
-        //System.out.print("pricecompare="+pricecompare);
-
         return pricecompare;
 
     }
@@ -82,10 +84,30 @@ public class Utils {
     public static BigDecimal StringToBigDecimal(String price){
 
         BigDecimal pricecompare = new BigDecimal(price).setScale(2, RoundingMode.DOWN);
-        //System.out.print("pricecompare="+pricecompare);
-
         return pricecompare;
 
+    }
+
+
+    public static Double randomQty(){
+
+        double start = 0;
+        double end = 999;
+        Double random = new Random().nextDouble();
+        double result = start + (random * (end - start));
+
+        Double truncatedDouble = BigDecimal.valueOf(result)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
+
+        return truncatedDouble;
+    }
+
+
+
+    public static BigDecimal randomPrice(){
+
+        return null;
     }
 
 

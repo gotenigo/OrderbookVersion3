@@ -349,10 +349,11 @@ public class OrderBookList implements OrderBookManager  {
             if(orderList==null) orderList= Collections.emptyList(); // for extra security
         }
 
-        //log.info("OrdersAtLevel="+orderList);
-
         return orderList;
     }
+
+
+
 
 
     @Override

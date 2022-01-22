@@ -300,17 +300,7 @@ public class OrderbookServiceAppTest {
 
         System.out.println("________________ TestGetAveragePriceOverLevel ");
 
-        double start = 0;
-        double end = 999;
-        Double random = new Random().nextDouble();
-        double result = start + (random * (end - start));
 
-        Double truncatedDouble = BigDecimal.valueOf(result)
-                .setScale(2, RoundingMode.HALF_UP)
-                .doubleValue();
-
-
-        System.out.println("random="+truncatedDouble);
 
 
         OrderBookManager orderBookManager = new OrderBookList();
@@ -450,78 +440,6 @@ public class OrderbookServiceAppTest {
 
 
 
-
-
-    @Test
-    public void TestConcurrentAddWithRandomMatchLoad() throws InterruptedException {
-
-        System.out.println("________________ TestConcurrentAddWithRandomMatchLoad ");
-
-        Random rand = new Random();
-        OrderBookManager orderBookManager= new OrderBookList();
-
-        int numberOfJob = 20_000;
-        //double priceRange=10000;
-
-        ExecutorService service = Executors.newFixedThreadPool(10);
-        //Define the Latch
-        CountDownLatch latchAddBuy = new CountDownLatch(numberOfJob);
-        CountDownLatch latchAddSell = new CountDownLatch(numberOfJob);
-
-        //Heavy Add SELL
-        for (int i = 0; i < numberOfJob; i++) {
-            int finalI = i;
-            service.execute(() -> {
-
-                //long qty = rand.nextInt(500)+1;
-                double price = ThreadLocalRandom.current().nextDouble(0.01, 999.99);
-                orderBookManager.updateOrder(toOrder("t=1638848595|i=ETHUSD|p="+price+"|q="+finalI+1+"|s=s"));
-                latchAddBuy.countDown();
-            });
-        }
-
-        //Heavy Add BUY
-        for (int i = numberOfJob; i < 2*numberOfJob; i++) {
-            int finalI = i;
-            service.execute(() -> {
-
-                //long qty = rand.nextInt(500)+1;
-                double price = ThreadLocalRandom.current().nextDouble(0.01, 999.99);
-                orderBookManager.updateOrder(toOrder("t=1638848595|i=ETHUSD|p="+price+"|q="+finalI+1+"|s=b"));
-                latchAddSell.countDown();
-            });
-        }
-
-        latchAddBuy.await();
-        latchAddSell.await();
-
-        int cmptDeleteSucess=0;
-        int cmptDeleteFailure=0;
-
-        for (int i=0; i<(1000); i++) {
-            long price=i+1;
-            List<Order> orderList = orderBookManager.getOrdersAtLevel("ETHUSD", Side.SELL, new BigDecimal(price));
-
-            for (Order o : orderList) {
-                boolean vRet =orderBookManager.updateOrder(toOrder("t=1638848595|i=BTCUSD|p=19.99|q=2|s=s"));
-                if(vRet)
-                    cmptDeleteSucess++;
-                else
-                    cmptDeleteFailure++;
-            }
-        }
-
-
-        for (int i=0; i<(1000); i++) {
-            long price = i + 1;
-            List<Order> orderList = orderBookManager.getOrdersAtLevel("ETHUSD", Side.SELL, new BigDecimal(price));
-            assertTrue(!orderList.isEmpty());
-        }
-
-        System.out.println("cmptSucess="+cmptDeleteSucess);
-        System.out.println("cmptFailure="+cmptDeleteFailure);
-
-    }
 
 
 

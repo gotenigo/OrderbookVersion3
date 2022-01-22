@@ -372,18 +372,4 @@ public class OrderBook {
 
 
 
-
-
-    public Map<BigDecimal, Set<Order>> getOrderbookBid() {
-        return orderbookBid;
-    }
-
-    public Map<BigDecimal, Set<Order>> getOrderbookAsk() {
-        return orderbookAsk;
-    }
-
-
-    public String getInstrument() {
-        return Instrument;
-    }
 }
