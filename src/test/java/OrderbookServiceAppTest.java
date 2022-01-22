@@ -43,15 +43,6 @@ public class OrderbookServiceAppTest {
 
     }
 
-        /*
-            BigDecimal pricecompare = new BigDecimal(32.9).setScale(2, RoundingMode.DOWN);
-            System.out.print("pricecompare="+pricecompare);
-
-            assertTrue(orderBook.getVolumeWeightedPriceOverLevel("BTCUSD",Side.BUY,5).containsKey( pricecompare  ));
-            assertEquals("BTCUSD", orderBook.getInstrument());
-        */
-
-
 
 
     @Test
