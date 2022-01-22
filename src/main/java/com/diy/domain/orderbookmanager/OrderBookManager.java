@@ -1,4 +1,4 @@
-package com.diy.orderbookmanager;
+package com.diy.domain.orderbookmanager;
 
 import com.diy.Side.Side;
 import com.diy.domain.Order;

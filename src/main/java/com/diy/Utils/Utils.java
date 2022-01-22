@@ -5,6 +5,7 @@ import com.diy.domain.Order;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.Locale;
 
@@ -16,8 +17,11 @@ import static java.util.Objects.requireNonNull;
 public class Utils {
 
 
-
-
+    /**
+     *
+     * @param order
+     * @return
+     */
     public static Order toOrder(String order){
 
 
@@ -53,6 +57,34 @@ public class Utils {
         //log.info("vOrder="+vOrder);
 
         return vOrder;
+
+    }
+
+
+
+
+    /**
+     *
+     * @param price
+     * @return
+     */
+    public static BigDecimal intToBigDecimal(int price){
+
+        BigDecimal pricecompare = new BigDecimal(price).setScale(2, RoundingMode.DOWN);
+        //System.out.print("pricecompare="+pricecompare);
+
+        return pricecompare;
+
+    }
+
+
+
+    public static BigDecimal StringToBigDecimal(String price){
+
+        BigDecimal pricecompare = new BigDecimal(price).setScale(2, RoundingMode.DOWN);
+        //System.out.print("pricecompare="+pricecompare);
+
+        return pricecompare;
 
     }
 

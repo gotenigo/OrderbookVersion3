@@ -1,14 +1,16 @@
-package com.diy.orderbookmanager;
+package com.diy.domain.orderbookmanager;
 
 
 
 import com.diy.Side.Side;
 import com.diy.domain.Order;
+import com.google.common.collect.Iterables;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 import static com.google.common.collect.MoreCollectors.onlyElement;
 
@@ -99,7 +101,6 @@ public class OrderBookList implements OrderBookManager  {
                 };
             }
 
-
         }else{
             log.info("I cant find any orderbook for Instrument under order ="+order);
         }
@@ -129,37 +130,31 @@ public class OrderBookList implements OrderBookManager  {
         //log.info("=> updateOrder received for "+order);
         List<Order> orderList=getOrdersAtLevel(instrument, side, price);
 
+        try {
 
-        Order vOrder=null;
-        if (!orderList.isEmpty()) {
-            vOrder =orderList.stream()
+            Order vOrder = orderList.stream()
                     .filter(x -> x.equals(order))
                     .collect(onlyElement());
 
-            if (vOrder.getQuantity()==order.getQuantity()){
+            if (vOrder.getQuantity() == order.getQuantity()) {
                 log.info("Transaction Ignored, nothing has changed on that order!"); // save time and improve perf
                 return false;
             }
+
+            if (order.getQuantity() > 0) { //•	If the quantity is not zero it means order book level at specified price needs to be updated (or inserted if it was not there)
+                if (!deleteOrder(order)) return false;
+                if (!addOrder(order)) return false;
+            } else if (order.getQuantity() == 0) { //•	If the quantity is zero it means the order book level at specified price must be removed from the book
+                if (!deleteOrder(order)) return false;
+            }
+
+        } catch (IllegalArgumentException  e) { //two or more elements
+            log.error(" ! Internal Error, you cant have more than 1 unique  in orderBookMap value");
+            throw e;
+        } catch (NoSuchElementException  e) {  //stream is empty
+            if (!addOrder(order)) return false; //  We add order if it does not exist
+
         }
-
-
-        if (vOrder!=null) {
-
-                if (order.getQuantity() > 0) { //•	If the quantity is not zero it means order book level at specified price needs to be updated (or inserted if it was not there)
-
-                    if (!deleteOrder(order)) return false;
-                    if (!addOrder(order)) return false;
-
-                } else if (order.getQuantity() == 0) { //•	If the quantity is zero it means the order book level at specified price must be removed from the book
-
-                    if (!deleteOrder(order)) return false;
-                }
-
-        }else{
-            //log.info("Trying to add order : "+order);
-            if (!addOrder(order)) return false; //  inserted if it was not there
-        }
-
 
         return true;
     }

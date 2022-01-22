@@ -62,8 +62,8 @@ public class Order {
         requireNonNull(timestamp);
         this.instrument = instrument;
         this.side = side;
-        this.price = price.setScale(2, RoundingMode.HALF_UP);
-        this.quantity = BigDecimal.valueOf(quantity).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        this.price = price.setScale(2, RoundingMode.DOWN);
+        this.quantity = BigDecimal.valueOf(quantity).setScale(2, RoundingMode.DOWN).doubleValue();
         this.timestamp=timestamp;
     }
 
@@ -87,12 +87,13 @@ public class Order {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-
         if (o == null || getClass() != o.getClass()) return false;
+
         Order order = (Order) o;
 
         if (! (price.compareTo(order.price)==0)) return false; // same price
-        if (instrument != null ? !instrument.equals(order.instrument) : order.instrument != null) return false; // null or same instrument
+        if (!instrument.equals(order.instrument)) return false;// same instrument
+        if (timestamp != null ? !timestamp.equals(order.timestamp) : order.timestamp != null) return false; // null or same timestamp
         return side == order.side; // same side
     }
 
@@ -101,9 +102,9 @@ public class Order {
     public int hashCode() {
 
         int result = (instrument != null ? instrument.hashCode() : 0);
+        result = 31 * result + (timestamp != null ? timestamp.hashCode() : 0);
         result = 31 * result + (side != null ? side.hashCode() : 0);
         result = 31 * result + (int) (price.longValue() ^ (price.longValue()>>> 32));
-
         return result;
     }
 

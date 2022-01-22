@@ -1,4 +1,4 @@
-package com.diy.orderbookmanager;
+package com.diy.domain.orderbookmanager;
 
 import com.diy.Side.Side;
 import com.diy.domain.Order;
@@ -347,7 +347,7 @@ public class OrderBook {
             if (orderBook.containsKey(price)) {
                 orderList = orderBook.get(price).stream().collect(Collectors.toList());
             }else{
-                //log.info("No order at Price level "+price+" under Side="+side+" and Instrument="+Instrument);
+                log.info("No order at Price level "+price+" under Side="+side+" and Instrument="+Instrument);
             }
         }else{
             log.info("order for product "+instrument+" ignored ! This OrderBook is set for "+this.Instrument);
