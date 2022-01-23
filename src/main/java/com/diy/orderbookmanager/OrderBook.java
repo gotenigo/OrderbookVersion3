@@ -1,4 +1,4 @@
-package com.diy.domain.orderbookmanager;
+package com.diy.orderbookmanager;
 
 import com.diy.Side.Side;
 import com.diy.domain.Order;
@@ -42,6 +42,9 @@ public class OrderBook {
         log.info("new OrderBook created for "+product+" : "+this+" !");
 
     }
+
+
+
 
 
     public boolean isEmpty(){
@@ -188,6 +191,7 @@ public class OrderBook {
             double sumPrQty =  sumQty * entry.getKey().doubleValue();
             numerator =numerator+sumPrQty;
             denominator=denominator+sumQty;
+
 
             if(cmpt==level) {
                 averagePrice=numerator/denominator;

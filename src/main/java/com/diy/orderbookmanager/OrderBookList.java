@@ -1,16 +1,14 @@
-package com.diy.domain.orderbookmanager;
+package com.diy.orderbookmanager;
 
 
 
 import com.diy.Side.Side;
 import com.diy.domain.Order;
-import com.google.common.collect.Iterables;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
 
 import static com.google.common.collect.MoreCollectors.onlyElement;
 
@@ -127,7 +125,6 @@ public class OrderBookList implements OrderBookManager  {
         Side side = order.getSide();
         BigDecimal price = order.getPrice();
 
-        //log.info("=> updateOrder received for "+order);
         List<Order> orderList=getOrdersAtLevel(instrument, side, price);
 
         try {
@@ -149,7 +146,7 @@ public class OrderBookList implements OrderBookManager  {
             }
 
         } catch (IllegalArgumentException  e) { //two or more elements
-            log.error(" ! Internal Error, you cant have more than 1 unique  in orderBookMap value");
+            log.error(" ! Internal Error, you cant have duplicate 'unique' Element in the orderBookMap :"+ orderBookMap);
             throw e;
         } catch (NoSuchElementException  e) {  //stream is empty
             if (!addOrder(order)) return false; //  We add order if it does not exist

@@ -29,12 +29,6 @@ public class Order {
     private Timestamp timestamp;
 
 
-    /** Hide the default ctor */
-    private Order() {}
-
-
-
-
 
     /**
      * Copying ctor

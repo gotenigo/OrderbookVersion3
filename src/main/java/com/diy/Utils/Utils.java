@@ -7,8 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Random;
+import java.util.TimeZone;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -67,19 +69,6 @@ public class Utils {
 
 
 
-    /**
-     *
-     * @param price
-     * @return
-     */
-    public static BigDecimal intToBigDecimal(double price){
-
-        BigDecimal pricecompare = new BigDecimal(price).setScale(2, RoundingMode.DOWN);
-        return pricecompare;
-
-    }
-
-
 
     public static BigDecimal StringToBigDecimal(String price){
 
@@ -92,8 +81,9 @@ public class Utils {
     public static Double randomQty(){
 
         double start = 0;
-        double end = 999;
+        double end = 10737418;
         Double random = new Random().nextDouble();
+
         double result = start + (random * (end - start));
 
         Double truncatedDouble = BigDecimal.valueOf(result)
@@ -107,10 +97,20 @@ public class Utils {
 
     public static BigDecimal randomPrice(){
 
-        return null;
+        BigDecimal min= new BigDecimal("0");
+        BigDecimal max= new BigDecimal("1000");
+        BigDecimal randomBigDecimal = min.add(new BigDecimal(Math.random()).multiply(max.subtract(min)));
+        return randomBigDecimal.setScale(2,RoundingMode.DOWN);
+
     }
 
 
+    public static Timestamp timestamp(){
 
+        GregorianCalendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+        long millis = cal.getTimeInMillis();
+
+        return new Timestamp(millis);
+    }
 
 }
