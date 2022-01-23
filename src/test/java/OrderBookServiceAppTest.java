@@ -188,7 +188,9 @@ public class OrderBookServiceAppTest {
 
     /*******************************
      *
-     *      Action : Test Functionality : Duplicate ,  getBestPrice ,
+     *      Action : Test Functionality : Duplicate ,  getBestPrice , getOrdersUpToLevel,
+     *                                       getAveragePriceOverLevel,  getTotalQtyOverLevel
+     *                                            getVolumeWeightedPriceOverLevel, getOrdersAtLevel
      *
      ************************************/
 
