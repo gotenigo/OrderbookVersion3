@@ -173,7 +173,7 @@ public class OrderBook {
      * @param level
      * @return
      */
-    public Double getAveragePriceOverLevel(String instrument, Side side, int level) {
+    public Double getAveragePriceOverLevel( Side side, int level) {
 
         double averagePrice=0;
         double numerator=0;
@@ -211,7 +211,7 @@ public class OrderBook {
      * @param level
      * @return
      */
-    public Double getTotalQtyOverLevel(String instrument, Side side, int level) {
+    public Double getTotalQtyOverLevel( Side side, int level) {
 
         double totalQtyOverLevel=0;
 
@@ -240,7 +240,7 @@ public class OrderBook {
      * @param level
      * @return
      */
-    public Map<BigDecimal, List<Double> > getVolumeWeightedPriceOverLevel(String instrument, Side side, int level) {
+    public Map<BigDecimal, List<Double> > getVolumeWeightedPriceOverLevel( Side side, int level) {
 
 
 

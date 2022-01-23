@@ -262,7 +262,7 @@ public class OrderBookList implements OrderBookManager  {
         double averagePrice=0;
         if (this.hasInstrument(instrument)){
 
-            averagePrice=orderBookMap.get(instrument).getAveragePriceOverLevel( instrument,  side,  level);
+            averagePrice=orderBookMap.get(instrument).getAveragePriceOverLevel(   side,  level);
         }
 
         return averagePrice ;
@@ -285,7 +285,7 @@ public class OrderBookList implements OrderBookManager  {
         double totalQtyOverLevel=0;
         if (this.hasInstrument(instrument)){
 
-            totalQtyOverLevel=orderBookMap.get(instrument).getTotalQtyOverLevel( instrument,  side,  level);
+            totalQtyOverLevel=orderBookMap.get(instrument).getTotalQtyOverLevel(   side,  level);
         }
 
         return totalQtyOverLevel ;
@@ -307,7 +307,7 @@ public class OrderBookList implements OrderBookManager  {
 
         if (this.hasInstrument(instrument)){
 
-            volumeWeightedPrice=orderBookMap.get(instrument).getVolumeWeightedPriceOverLevel( instrument,  side,  level);
+            volumeWeightedPrice=orderBookMap.get(instrument).getVolumeWeightedPriceOverLevel(   side,  level);
         }
 
         return volumeWeightedPrice ;
