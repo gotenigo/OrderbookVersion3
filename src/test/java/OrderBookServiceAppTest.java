@@ -294,7 +294,7 @@ public class OrderBookServiceAppTest {
 
         System.out.println("________________ TestGetAveragePriceOverLevel ");
 
-        int nbrLoop = 100;
+        int nbrLoop = 20;
 
         List<BigDecimal []> listQtyPrice = new ArrayList<>();
         BigDecimal numerator=BigDecimal.ZERO;
