@@ -329,13 +329,8 @@ public class OrderBookServiceAppTest {
         }
 
         BigDecimal averagePrice=numerator.divide(denominator, RoundingMode.DOWN);
-        System.out.println("=>averagePrice="+averagePrice);
 
         BigDecimal getAveragePriceOverLevel = orderBookManager.getAveragePriceOverLevel("BTCUSD",Side.SELL, nbrLoop);
-        System.out.println("=>getAveragePriceOverLevel="+getAveragePriceOverLevel);
-
-        Map<BigDecimal, Set<Order>> getOrdersUpToLevelSell=orderBookManager.getOrdersUpToLevel("BTCUSD",Side.SELL,nbrLoop);
-        System.out.println("getOrdersUpToLevelSell="+getOrdersUpToLevelSell);
 
         assertEquals(averagePrice,getAveragePriceOverLevel);
 
