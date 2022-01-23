@@ -591,20 +591,6 @@ public class OrderBookServiceAppTest {
     }
 
 
-    @Test
-    public void TestDuplicatedNotAllowed() {
-        System.out.println("________________ TestDuplicatedNotAllowed ");
-        Order order = toOrder("t=1638848595|i=BTCUSD|p=32.99|q=100|s=b");
-        OrderBookList orderBookList = new OrderBookList();
-        orderBookList.updateOrder(new Order(order));
-        order = toOrder("t=1638848595|i=BTCUSD|p=32.99|q=100|s=b");
-        orderBookList.updateOrder(new Order(order));
-        List<Order> orderList = orderBookList.getOrdersAtLevel("BTCUSD", Side.BUY, new BigDecimal("32.99"));
-
-        assertTrue(orderList.size() == 1);
-
-    }
-
 
 
 
