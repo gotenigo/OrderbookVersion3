@@ -337,12 +337,17 @@ public class OrderBookServiceAppTest {
 
 
 
+
+
+
+
+
     @Test
     public void TestGetTotalQtyOverLevel(){
 
         System.out.println("________________ TestGetTotalQtyOverLevel ");
 
-        int nbrLoop = 100;
+        int nbrLoop = 50;
 
         List<Double []> listQtyPrice = new ArrayList<>();
         double totalQty=0;
@@ -378,6 +383,9 @@ public class OrderBookServiceAppTest {
         assertEquals(totalQty,getTotalQtyOverLevel,0.001);
 
     }
+
+
+
 
 
 
@@ -434,9 +442,6 @@ public class OrderBookServiceAppTest {
             cmpt++;
         }
 
-
-
-
     }
 
 
@@ -474,9 +479,7 @@ public class OrderBookServiceAppTest {
                 price = randomPrice().doubleValue();
                 qty = randomQty().doubleValue();
             }
-
             listQtyPrice.add(new Double[]{qty, price, });
-
         }
 
         OrderBookManager orderBookManager = new OrderBookList();
