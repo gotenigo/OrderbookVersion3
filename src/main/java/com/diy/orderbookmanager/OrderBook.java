@@ -40,7 +40,6 @@ public class OrderBook {
         this.Instrument = product;
 
         log.info("new OrderBook created for "+product+" : "+this+" !");
-
     }
 
 
@@ -168,7 +167,6 @@ public class OrderBook {
 
     /**
      *
-     * @param instrument
      * @param side
      * @param level
      * @return
@@ -202,11 +200,8 @@ public class OrderBook {
     }
 
 
-
-
     /**
      *
-     * @param instrument
      * @param side
      * @param level
      * @return
@@ -235,7 +230,6 @@ public class OrderBook {
 
     /**
      *
-     * @param instrument
      * @param side
      * @param level
      * @return
