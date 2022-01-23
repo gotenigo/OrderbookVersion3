@@ -119,14 +119,14 @@ public class OrderBook {
 
         if (orderBook.containsKey(price)) {
 
-                success=orderBook.get(price).remove(order);
+            success=orderBook.get(price).remove(order);
 
-                if(orderBook.get(price).isEmpty()){ // if there is no Order left
-                    if(orderBook.remove(price)==null){ // then we delete the key (price) to free memory
-                        log.error(" - orderBook -Internal Error : key  "+price+" could not be deleted successfully !");
-                        success=false;
-                    };
-                }
+            if(orderBook.get(price).isEmpty()){ // if there is no Order left
+                if(orderBook.remove(price)==null){ // then we delete the key (price) to free memory
+                    log.error(" - orderBook -Internal Error : key  "+price+" could not be deleted successfully !");
+                    success=false;
+                };
+            }
 
         } else {
                 log.info("this record order "+order+" does not exist !");
