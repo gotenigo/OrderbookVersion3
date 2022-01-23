@@ -129,7 +129,7 @@ public class OrderBook {
             }
 
         } else {
-                log.info("this record order "+order+" does not exist !");
+            log.info("this record order "+order+" does not exist !");
         }
 
         return success;
