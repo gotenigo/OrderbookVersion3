@@ -48,7 +48,6 @@ public class OrderBook {
 
 
     public boolean isEmpty(){
-
         if (!orderbookBid.isEmpty() || !orderbookAsk.isEmpty())
             return false;
 
@@ -81,11 +80,11 @@ public class OrderBook {
 
         if (orderBook.containsKey(price)) {
             success=orderBook.get(price).add(order);
-            //log.info("OrderBook ADD with existing price="+price+" => order "+order);
+            //log.debug("OrderBook ADD with existing price="+price+" => order "+order);
         } else {
             orderBook.put(price, Collections.newSetFromMap(new ConcurrentHashMap<>())  ); // O(log(n)) - the same thread-safe and performance guarantees as the map passed as argument
             success =orderBook.get(price).add(order);                                      //You typically use this method to create a concurrent set from a concurrent map, because there is no ConcurrentHashSet in the API.
-            //log.info("OrderBook ADD with new price="+price+" => order "+order);
+            //log.debug("OrderBook ADD with new price="+price+" => order "+order);
         }
 
         return success;
