@@ -363,7 +363,6 @@ public class OrderBookServiceAppTest {
             mapQtyPrice.put(price,qty); // need because Random can generate a dupe on high iteration number
         }
 
-        System.out.println("=>totalQty="+totalQty);
 
         //2. Inject Order
         OrderBookManager orderBookManager = new OrderBookList();
@@ -382,11 +381,7 @@ public class OrderBookServiceAppTest {
 
         BigDecimal getTotalQtyOverLevel = orderBookManager.getTotalQtyOverLevel("BTCUSD",Side.BUY, nbrLoop);
 
-        System.out.println("=>getTotalQtyOverLevelSell="+getTotalQtyOverLevel);
-
-        Map<BigDecimal, Set<Order>> getOrdersUpToLevelSell=orderBookManager.getOrdersUpToLevel("BTCUSD",Side.BUY,nbrLoop);
-
-        System.out.println("getTotalQtyOverLevelSell="+getOrdersUpToLevelSell);
+        Map<BigDecimal, Set<Order>> getOrdersUpToLevel=orderBookManager.getOrdersUpToLevel("BTCUSD",Side.BUY,nbrLoop);
 
         assertEquals(totalQty,getTotalQtyOverLevel);
 
