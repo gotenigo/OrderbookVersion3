@@ -463,7 +463,7 @@ public class OrderBookServiceAppTest {
 
         System.out.println("________________ TestConcurrentAddReadHeavyLoad ");
 
-        int numberOfJob = 2000; // Number of Order created
+        int numberOfJob = 10_000; // Number of Order created
         int grpPerPrice=5; // number of Order under the same price
 
         // using native object for easier handling
@@ -500,7 +500,7 @@ public class OrderBookServiceAppTest {
         ExecutorService service = Executors.newFixedThreadPool(10);
         //Define the Latch
         CountDownLatch latchAdd = new CountDownLatch(numberOfJob);
-        CountDownLatch latchDelete = new CountDownLatch(numberOfJob);
+        CountDownLatch latchRead = new CountDownLatch(numberOfJob);
 
         //Heavy Add
         int cmpt=0;
@@ -524,12 +524,12 @@ public class OrderBookServiceAppTest {
 
             service.execute(() -> {
                 vList.add(orderBookManager.getVolumeWeightedPriceOverLevel("BTCUSD",Side.BUY,numberOfJob)); // read everything
-                latchDelete.countDown();
+                latchRead.countDown();
             });
         }
 
         latchAdd.await();
-        latchDelete.await();
+        latchRead.await();
 
         // workout the Map pair  GroupByPrice Vs Count
         Map<Double, Long> listPositionGrpByPrice = listPosition.stream()
