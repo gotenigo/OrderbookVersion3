@@ -381,8 +381,6 @@ public class OrderBookServiceAppTest {
 
         BigDecimal getTotalQtyOverLevel = orderBookManager.getTotalQtyOverLevel("BTCUSD",Side.BUY, nbrLoop);
 
-        Map<BigDecimal, Set<Order>> getOrdersUpToLevel=orderBookManager.getOrdersUpToLevel("BTCUSD",Side.BUY,nbrLoop);
-
         assertEquals(totalQty,getTotalQtyOverLevel);
 
     }
