@@ -140,15 +140,15 @@ public class OrderBookList implements OrderBookManager  {
                     .filter(x -> x.equals(order))
                     .collect(onlyElement());
 
-            if (vOrder.getQuantity() == order.getQuantity()) {
+            if (vOrder.getQuantity().compareTo(order.getQuantity())==0) {
                 log.info("Transaction Ignored, nothing has changed on that order!"); // save time and improve perf
                 return false;
             }
 
-            if (order.getQuantity() > 0) { //•	If the quantity is not zero it means order book level at specified price needs to be updated (or inserted if it was not there)
+            if (order.getQuantity().signum() > 0) { //•	If the quantity is not zero it means order book level at specified price needs to be updated (or inserted if it was not there)
                 if (!deleteOrder(order)) return false;
                 if (!addOrder(order)) return false;
-            } else if (order.getQuantity() == 0) { //•	If the quantity is zero it means the order book level at specified price must be removed from the book
+            } else if (order.getQuantity().compareTo(BigDecimal.ZERO) == 0) { //•	If the quantity is zero it means the order book level at specified price must be removed from the book
                 if (!deleteOrder(order)) return false;
             }
 
@@ -264,9 +264,9 @@ public class OrderBookList implements OrderBookManager  {
      * @return Double
      */
     @Override
-    public Double getAveragePriceOverLevel(String instrument, Side side, int level) {
+    public BigDecimal getAveragePriceOverLevel(String instrument, Side side, int level) {
 
-        double averagePrice=0;
+        BigDecimal averagePrice=BigDecimal.ZERO;
         if (this.hasInstrument(instrument)){
 
             averagePrice=orderBookMap.get(instrument).getAveragePriceOverLevel(   side,  level);
@@ -287,9 +287,9 @@ public class OrderBookList implements OrderBookManager  {
      * @return Double
      */
     @Override
-    public Double getTotalQtyOverLevel(String instrument, Side side, int level) {
+    public BigDecimal getTotalQtyOverLevel(String instrument, Side side, int level) {
 
-        double totalQtyOverLevel=0;
+        BigDecimal totalQtyOverLevel=BigDecimal.ZERO;
         if (this.hasInstrument(instrument)){
 
             totalQtyOverLevel=orderBookMap.get(instrument).getTotalQtyOverLevel(   side,  level);
@@ -308,9 +308,9 @@ public class OrderBookList implements OrderBookManager  {
      * @return Map<BigDecimal, List<Double>> or Collections.EMPTY_MAP
      */
     @Override
-    public Map<BigDecimal,List<Double>> getVolumeWeightedPriceOverLevel(String instrument, Side side, int level) {
+    public Map<BigDecimal,List<Number>> getVolumeWeightedPriceOverLevel(String instrument, Side side, int level) {
 
-        Map<BigDecimal, List<Double>> volumeWeightedPrice = Collections.EMPTY_MAP;
+        Map<BigDecimal, List<Number>> volumeWeightedPrice = Collections.EMPTY_MAP;
 
         if (this.hasInstrument(instrument)){
 

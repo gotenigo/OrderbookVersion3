@@ -72,7 +72,7 @@ public interface OrderBookManager {
      * @param level
      * @return Double
      */
-    Double getAveragePriceOverLevel(String instrument, Side side, int level);
+    BigDecimal getAveragePriceOverLevel(String instrument, Side side, int level);
 
 
     /**
@@ -82,7 +82,7 @@ public interface OrderBookManager {
      * @param level
      * @return Double
      */
-    Double getTotalQtyOverLevel(String instrument, Side side, int level);
+    BigDecimal getTotalQtyOverLevel(String instrument, Side side, int level);
 
 
 
@@ -93,7 +93,7 @@ public interface OrderBookManager {
      * @param level
      * @return  Map<BigDecimal,List<Double>>
      */
-    Map<BigDecimal,List<Double>> getVolumeWeightedPriceOverLevel(String instrument, Side side, int level);
+    Map<BigDecimal,List<Number>> getVolumeWeightedPriceOverLevel(String instrument, Side side, int level);
 
 
 }

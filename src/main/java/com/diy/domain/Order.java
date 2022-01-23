@@ -22,7 +22,7 @@ public class Order {
     private BigDecimal price;   // memory usage :  36 + Ceiling(log2(n)/8.0) bytes
 
     /** required quantity, always positive */
-    private Double quantity;  // memory usage :  36 + Ceiling(log2(n)/8.0) bytes
+    private BigDecimal quantity;  // memory usage :  36 + Ceiling(log2(n)/8.0) bytes
 
     private Timestamp timestamp;
 
@@ -46,16 +46,16 @@ public class Order {
      * @param price limit price for the order, always positive
      * @param quantity required quantity, always positive
      */
-    public Order( String instrument, Side side, BigDecimal price, Double quantity, Timestamp timestamp) {
+    public Order( String instrument, Side side, BigDecimal price, BigDecimal quantity, Timestamp timestamp) {
 
         requireNonNull(instrument);
         checkArgument(price.signum() > 0, "price must be positive");
-        checkArgument(quantity > -1, "quantity must be positive");
+        checkArgument(quantity.signum() >= 0 /*> -1*/, "quantity cant be negative");
         requireNonNull(timestamp);
         this.instrument = instrument;
         this.side = side;
         this.price = price.setScale(2, RoundingMode.DOWN);
-        this.quantity = BigDecimal.valueOf(quantity).setScale(2, RoundingMode.DOWN).doubleValue();
+        this.quantity = quantity.setScale(2, RoundingMode.DOWN);//BigDecimal.valueOf(quantity).setScale(2, RoundingMode.DOWN).doubleValue();
         this.timestamp=timestamp;
     }
 
@@ -70,7 +70,7 @@ public class Order {
     public BigDecimal getPrice() {
         return price;
     }
-    public double getQuantity() {
+    public BigDecimal getQuantity() {
         return quantity;
     }
 

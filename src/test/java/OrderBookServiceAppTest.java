@@ -5,12 +5,11 @@ import com.diy.orderbookmanager.OrderBookList;
 import com.diy.orderbookmanager.OrderBookManager;
 import org.junit.Test;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 
 import static com.diy.Utils.Utils.*;
@@ -188,9 +187,7 @@ public class OrderBookServiceAppTest {
 
     /*******************************
      *
-     *      Action : Test Functionality : Duplicate ,  getBestPrice , getOrdersUpToLevel,
-     *                                       getAveragePriceOverLevel,  getTotalQtyOverLevel
-     *                                            getVolumeWeightedPriceOverLevel, getOrdersAtLevel
+     *      Action : Test Functionality : Duplicate ,  getBestPrice ,
      *
      ************************************/
 
@@ -245,7 +242,6 @@ public class OrderBookServiceAppTest {
 
         System.out.println("________________ TestOrderBookManagerGetOrdersAtLevel");
 
-
         OrderBookManager orderBookManager = new OrderBookList();
         Order order = toOrder("t=1638848595|i=BTCUSD|p=32.99|q=100|s=s");
         assertTrue(orderBookManager.updateOrder(order));// Add order
@@ -259,7 +255,7 @@ public class OrderBookServiceAppTest {
         assertTrue(orderBookManager.updateOrder(order)); // Add order
         orderList = orderBookManager.getOrdersAtLevel("BTCUSD", Side.SELL, StringToBigDecimal("32.99"));
 
-        assertEquals( 2, orderList.size());  //something under SELL
+        assertEquals( 2, orderList.size());  // we expect data under SELL
 
     }
 
@@ -298,35 +294,36 @@ public class OrderBookServiceAppTest {
 
         System.out.println("________________ TestGetAveragePriceOverLevel ");
 
-        int nbrLoop = 50;
+        int nbrLoop = 100;
 
-        List<Double []> listQtyPrice = new ArrayList<>();
-        double numerator=0;
-        double denominator=0;
+        List<BigDecimal []> listQtyPrice = new ArrayList<>();
+        BigDecimal numerator=BigDecimal.ZERO;
+        BigDecimal denominator=BigDecimal.ZERO;
 
         //1. prepare the value : Qty & Price
         for(int i=0; i<nbrLoop; i++){
 
-            double price =randomPrice().doubleValue();
-            double qty =randomQty().doubleValue();
+            BigDecimal price =randomPrice();
+            BigDecimal qty =randomQty();
 
-            numerator= numerator + (price * qty);
-            denominator=denominator+qty;
-            listQtyPrice.add(new Double[]{qty, price});
+            numerator= numerator .add (price.multiply(qty));
+            denominator=denominator.add(qty);
+            listQtyPrice.add(new BigDecimal[]{qty, price});
 
         }
 
-        double averagePrice=numerator/denominator;
+
+        BigDecimal averagePrice=numerator.divide(denominator, RoundingMode.DOWN);
         System.out.println("=>averagePrice="+averagePrice);
 
         //2. Inject Order
         OrderBookManager orderBookManager = new OrderBookList();
 
-        for(Double[] e : listQtyPrice){
+        for(Number[] e : listQtyPrice){
            assertTrue( orderBookManager.updateOrder(toOrder("t=1642817574433|i=BTCUSD|p="+e[1]+"|q="+e[0]+"|s=s")));
         }
 
-        double getAveragePriceOverLevel = orderBookManager.getAveragePriceOverLevel("BTCUSD",Side.SELL, nbrLoop);
+        BigDecimal getAveragePriceOverLevel = orderBookManager.getAveragePriceOverLevel("BTCUSD",Side.SELL, nbrLoop);
 
         System.out.println("=>getAveragePriceOverLevel="+getAveragePriceOverLevel);
 
@@ -334,7 +331,7 @@ public class OrderBookServiceAppTest {
 
         System.out.println("getOrdersUpToLevelSell="+getOrdersUpToLevelSell);
 
-        assertEquals(averagePrice,getAveragePriceOverLevel,0.001);
+        assertEquals(averagePrice,getAveragePriceOverLevel);
 
     }
 
@@ -353,18 +350,18 @@ public class OrderBookServiceAppTest {
 
         int nbrLoop = 50;
 
-        List<Double []> listQtyPrice = new ArrayList<>();
-        double totalQty=0;
+        List<BigDecimal []> listQtyPrice = new ArrayList<>();
+        BigDecimal totalQty=BigDecimal.ZERO;
 
         //1. prepare the value : Qty & Price
         for(int i=0; i<nbrLoop; i++){
 
-            double price =randomPrice().doubleValue();
-            double qty =randomQty().doubleValue();
+            BigDecimal price =randomPrice();
+            BigDecimal qty =randomQty();
 
-            totalQty=totalQty+qty;
-            listQtyPrice.add(new Double[]{qty, price});
+            listQtyPrice.add(new BigDecimal[]{qty, price});
 
+            totalQty= totalQty .add (qty);
         }
 
         System.out.println("=>totalQty="+totalQty);
@@ -372,11 +369,11 @@ public class OrderBookServiceAppTest {
         //2. Inject Order
         OrderBookManager orderBookManager = new OrderBookList();
 
-        for(Double[] e : listQtyPrice){
+        for(BigDecimal[] e : listQtyPrice){
             assertTrue( orderBookManager.updateOrder(toOrder("t=1642817574433|i=BTCUSD|p="+e[1]+"|q="+e[0]+"|s=b")));
         }
 
-        double getTotalQtyOverLevel = orderBookManager.getTotalQtyOverLevel("BTCUSD",Side.BUY, nbrLoop);
+        BigDecimal getTotalQtyOverLevel = orderBookManager.getTotalQtyOverLevel("BTCUSD",Side.BUY, nbrLoop);
 
         System.out.println("=>getTotalQtyOverLevelSell="+getTotalQtyOverLevel);
 
@@ -384,7 +381,7 @@ public class OrderBookServiceAppTest {
 
         System.out.println("getTotalQtyOverLevelSell="+getOrdersUpToLevelSell);
 
-        assertEquals(totalQty,getTotalQtyOverLevel,0.001);
+        assertEquals(totalQty,getTotalQtyOverLevel);
 
     }
 
@@ -403,21 +400,21 @@ public class OrderBookServiceAppTest {
         int nbrLoop = 100; // Number of Order created
         int grpPerPrice=5; // number of Order under the same price
 
-        List<Double []> listQtyPrice = new ArrayList<>();
+        List<BigDecimal[]> listQtyPrice = new ArrayList<>();
 
-        double price=randomPrice().doubleValue();
-        double qty=randomQty().doubleValue();
+        BigDecimal price=randomPrice();
+        BigDecimal qty=randomQty();
         long timestamp = 1638848595;
 
         //1. prepare the value : Qty & Price
         for(int i=0; i<nbrLoop; i++){
 
             if (i%grpPerPrice==0) {
-                price = randomPrice().doubleValue();
-                qty = randomQty().doubleValue();
+                price = randomPrice();
+                qty = randomQty();
             }
 
-            listQtyPrice.add(new Double[]{qty, price, });
+            listQtyPrice.add(new BigDecimal[]{qty, price, });
 
         }
 
@@ -426,7 +423,7 @@ public class OrderBookServiceAppTest {
         OrderBookManager orderBookManager = new OrderBookList();
 
         int cmpt=0;
-        for(Double[] e : listQtyPrice){
+        for(BigDecimal[] e : listQtyPrice){
             assertTrue( orderBookManager.updateOrder(toOrder("t="+timestamp+cmpt+"|i=BTCUSD|p="+e[1]+"|q="+e[0]+"|s=b")));
             cmpt++;
         }
@@ -435,13 +432,13 @@ public class OrderBookServiceAppTest {
         System.out.println("getTotalQtyOverLevelSell="+getOrdersUpToLevelSell);
 
 
-        Map<BigDecimal,List<Double>>  getVolumeWeightedPriceOverLevel = orderBookManager.getVolumeWeightedPriceOverLevel("BTCUSD",Side.BUY,nbrLoop);
+        Map<BigDecimal,List<Number>>  getVolumeWeightedPriceOverLevel = orderBookManager.getVolumeWeightedPriceOverLevel("BTCUSD",Side.BUY,nbrLoop);
         System.out.println("getVolumeWeightedPriceOverLevel="+getVolumeWeightedPriceOverLevel);
 
 
         assertEquals((nbrLoop/grpPerPrice), getVolumeWeightedPriceOverLevel.size());
 
-        for(Double[] e : listQtyPrice){
+        for(Number[] e : listQtyPrice){
             assertEquals( grpPerPrice , orderBookManager.getOrdersAtLevel("BTCUSD", Side.BUY, StringToBigDecimal(e[1]+"")).size());
             cmpt++;
         }
@@ -461,57 +458,48 @@ public class OrderBookServiceAppTest {
 
 
     @Test
-    public void TestConcurrentAddReadHeavyLoad() throws InterruptedException {
+    public void TestConcurrentAddDeleteHeavyLoad() throws InterruptedException {
 
-        System.out.println("________________ TestConcurrentAddReadHeavyLoad ");
+        System.out.println("________________ TestConcurrentAddDeleteHeavyLoad ");
 
         int numberOfJob = 10_000; // Number of Order created
         int grpPerPrice=5; // number of Order under the same price
 
-        // using native object for easier handling
-        class Position{
-            double qty;
-            double price;
+        List<BigDecimal []> listQtyPrice = new ArrayList<>();
 
-            Position(double qty, double price){
-                this.qty=qty;
-                this.price=price;
-            }
-            double getQty(){return qty;}
-            double getPrice(){return price;}
-        }
 
-        List<Position> listPosition = new ArrayList<>();
-
-        double price=randomPrice().doubleValue();
-        double qty=randomQty().doubleValue();
+        BigDecimal price=randomPrice();
+        BigDecimal qty=randomQty();
         long timestamp = 1638848595;
+
 
         //1. prepare the value : Qty & Price
         for(int i=0; i<numberOfJob; i++){
 
             if (i%grpPerPrice==0) {
-                price = randomPrice().doubleValue();
-                qty = randomQty().doubleValue();
+                price = randomPrice();
+                qty = randomQty();
             }
-            listPosition.add(new Position(qty,price));
+            listQtyPrice.add(new BigDecimal[]{qty, price, });
         }
 
         OrderBookManager orderBookManager = new OrderBookList();
 
+
         ExecutorService service = Executors.newFixedThreadPool(10);
         //Define the Latch
         CountDownLatch latchAdd = new CountDownLatch(numberOfJob);
-        CountDownLatch latchRead = new CountDownLatch(numberOfJob);
+        CountDownLatch latchDelete = new CountDownLatch(numberOfJob);
+
 
         //Heavy Add
         int cmpt=0;
-        for(Position e : listPosition){
+        for(BigDecimal[] e : listQtyPrice){
 
             int finalCmpt = cmpt;
 
             service.execute(() -> {
-                orderBookManager.updateOrder(toOrder("t="+timestamp+ finalCmpt +"|i=BTCUSD|p="+e.getPrice()+"|q="+e.getQty()+"|s=b"));
+                orderBookManager.updateOrder(toOrder("t="+timestamp+ finalCmpt +"|i=BTCUSD|p="+e[1]+"|q="+e[0]+"|s=b"));
                 latchAdd.countDown();
             });
 
@@ -519,30 +507,29 @@ public class OrderBookServiceAppTest {
         }
         System.out.println("cmpt="+cmpt);
 
+        cmpt=0;
+        for(BigDecimal[] e : listQtyPrice){
 
-        //Heavy Read
-        List<Map> vList= new ArrayList<>();
-        for(Position e : listPosition){
+            int finalCmpt = cmpt;
 
             service.execute(() -> {
-                vList.add(orderBookManager.getVolumeWeightedPriceOverLevel("BTCUSD",Side.BUY,numberOfJob)); // read everything
-                latchRead.countDown();
+                orderBookManager.updateOrder(toOrder("t="+timestamp+ finalCmpt +"|i=BTCUSD|p="+e[1]+"|q=0|s=b"));
+                latchDelete.countDown();
             });
-        }
 
-        latchAdd.await();
-        latchRead.await();
-
-        // workout the Map pair  GroupByPrice Vs Count
-        Map<Double, Long> listPositionGrpByPrice = listPosition.stream()
-                .collect(Collectors.groupingByConcurrent(Position::getPrice, Collectors.counting()));
-        System.out.println("listPositionGrpByPrice="+listPositionGrpByPrice);
-
-        //make sure the Data added matches the Data read
-        for(Position e : listPosition){
-            assertEquals( listPositionGrpByPrice.get(e.getPrice()).intValue() , orderBookManager.getOrdersAtLevel("BTCUSD", Side.BUY, StringToBigDecimal(e.getPrice()+"")).size());
             cmpt++;
         }
+
+
+        latchAdd.await();
+        latchDelete.await();
+
+
+        for(BigDecimal[] e : listQtyPrice){
+            assertEquals( Collections.emptyList() , orderBookManager.getOrdersAtLevel("BTCUSD", Side.BUY, StringToBigDecimal(e[1]+"")));
+        }
+
+
 
     }
 
@@ -604,6 +591,20 @@ public class OrderBookServiceAppTest {
         Order order = toOrder("t=1638848595|i=BTCUSD|p=32.99|q=-1|s=s");
     }
 
+
+    @Test
+    public void TestDuplicatedNotAllowed() {
+        System.out.println("________________ TestDuplicatedNotAllowed ");
+        Order order = toOrder("t=1638848595|i=BTCUSD|p=32.99|q=100|s=b");
+        OrderBookList orderBookList = new OrderBookList();
+        orderBookList.updateOrder(new Order(order));
+        order = toOrder("t=1638848595|i=BTCUSD|p=32.99|q=100|s=b");
+        orderBookList.updateOrder(new Order(order));
+        List<Order> orderList = orderBookList.getOrdersAtLevel("BTCUSD", Side.BUY, new BigDecimal("32.99"));
+
+        assertTrue(orderList.size() == 1);
+
+    }
 
 
 

@@ -5,6 +5,7 @@ import com.diy.domain.Order;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -171,11 +172,11 @@ public class OrderBook {
      * @param level
      * @return Double
      */
-    public Double getAveragePriceOverLevel( Side side, int level) {
+    public BigDecimal getAveragePriceOverLevel( Side side, int level) {
 
-        double averagePrice=0;
-        double numerator=0;
-        double denominator=0;
+        BigDecimal averagePrice=BigDecimal.ZERO;
+        BigDecimal numerator=BigDecimal.ZERO;
+        BigDecimal denominator=BigDecimal.ZERO;
 
         Map<BigDecimal, Set<Order>> orderBook = getOrderBookBySide(side);
         Iterator<Map.Entry<BigDecimal, Set<Order>>> iterator = orderBook.entrySet().iterator();
@@ -184,14 +185,14 @@ public class OrderBook {
 
             Map.Entry<BigDecimal, Set<Order>> entry = iterator.next();
 
-            double sumQty =  entry.getValue().stream().mapToDouble(x ->   x.getQuantity()).sum();
-            double sumPrQty =  sumQty * entry.getKey().doubleValue();
-            numerator =numerator+sumPrQty;
-            denominator=denominator+sumQty;
+            BigDecimal sumQty =  entry.getValue().stream().map(x ->   x.getQuantity()).reduce((e1,e2)->e1.add(e2)).get();
+            BigDecimal sumPrQty =  sumQty.multiply(entry.getKey()) ;
+            numerator =numerator.add(sumPrQty);
+            denominator=denominator.add(sumQty);
 
 
             if(cmpt==level) {
-                averagePrice=numerator/denominator;
+                averagePrice=numerator.divide(denominator, RoundingMode.DOWN);
                 break;
             }
         }
@@ -206,9 +207,9 @@ public class OrderBook {
      * @param level
      * @return Double
      */
-    public Double getTotalQtyOverLevel( Side side, int level) {
+    public BigDecimal getTotalQtyOverLevel( Side side, int level) {
 
-        double totalQtyOverLevel=0;
+        BigDecimal totalQtyOverLevel = BigDecimal.ZERO;
 
         Map<BigDecimal, Set<Order>> orderBook = getOrderBookBySide(side);
         Iterator<Map.Entry<BigDecimal, Set<Order>>> iterator = orderBook.entrySet().iterator();
@@ -216,8 +217,8 @@ public class OrderBook {
         for( int cmpt=1;iterator.hasNext();cmpt++){
 
             Map.Entry<BigDecimal, Set<Order>> entry = iterator.next();
-            double sumQty =  entry.getValue().stream().mapToDouble(x ->   x.getQuantity()).sum();
-            totalQtyOverLevel =totalQtyOverLevel+sumQty;
+            BigDecimal sumQty =  entry.getValue().stream().map(x ->   x.getQuantity()).reduce((e1,e2)->e1.add(e2)).get();
+            totalQtyOverLevel =totalQtyOverLevel.add(sumQty);
 
             if(cmpt==level) {
                 break;
@@ -238,17 +239,17 @@ public class OrderBook {
      * @param level
      * @return Map<BigDecimal, List<Double>>
      */
-    public Map<BigDecimal, List<Double>> getVolumeWeightedPriceOverLevel( Side side, int level) {
+    public Map<BigDecimal, List<Number>> getVolumeWeightedPriceOverLevel( Side side, int level) {
 
-        Map<BigDecimal, List<Double>> volumeWeightedPrice= new LinkedHashMap<>();
+        Map<BigDecimal, List<Number>> volumeWeightedPrice= new LinkedHashMap<>();
         Map<BigDecimal, Set<Order>> orderBook = getOrderBookBySide(side);
         Iterator<Map.Entry<BigDecimal, Set<Order>>> iterator = orderBook.entrySet().iterator();
 
         for( int cmpt=1;iterator.hasNext();cmpt++){
 
             Map.Entry<BigDecimal, Set<Order>> entry = iterator.next();
-            double sum =  entry.getValue().stream().mapToDouble(x ->   x.getQuantity()).sum();
-            double count =entry.getValue().size();
+            BigDecimal sum =  entry.getValue().stream().map(x ->   x.getQuantity()).reduce((e1,e2)->e1.add(e2)).get();
+            int count =entry.getValue().size();
             volumeWeightedPrice.put(entry.getKey(), Arrays.asList(count,sum));
 
             if(cmpt==level) {

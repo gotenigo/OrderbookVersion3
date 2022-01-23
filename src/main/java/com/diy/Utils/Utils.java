@@ -9,7 +9,6 @@ import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-import java.util.Random;
 import java.util.TimeZone;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -36,8 +35,8 @@ public class Utils {
         BigDecimal price=new BigDecimal(arg[2].substring(2));  // price
         checkArgument(price.signum()> 0, "price must be positive");
 
-        Double quantity=Double.parseDouble((arg[3].substring(2)));  // Qty
-        checkArgument(quantity > -1, "quantity must be positive");
+        BigDecimal quantity=new BigDecimal(arg[3].substring(2));  // Qty
+        checkArgument(quantity.signum() >= 0, "quantity cant be negative");
 
         requireNonNull(arg[4]); // Side
 
@@ -52,8 +51,6 @@ public class Utils {
                 side=Side.SELL;
                 break;
         }
-
-        //DateFormat simple = new SimpleDateFormat("dd MMM yyyy HH:mm:ss:SSS Z");
 
         String timestampStr = arg[0].substring(2);
         long time=Long.valueOf(timestampStr).longValue();
@@ -72,26 +69,23 @@ public class Utils {
 
     public static BigDecimal StringToBigDecimal(String price){
 
-        BigDecimal pricecompare = new BigDecimal(price).setScale(2, RoundingMode.DOWN);
-        return pricecompare;
+        BigDecimal priceCompare = new BigDecimal(price).setScale(2, RoundingMode.DOWN);
+        return priceCompare;
 
     }
 
 
-    public static Double randomQty(){
 
-        double start = 0;
-        double end = 10737418;
-        Double random = new Random().nextDouble();
 
-        double result = start + (random * (end - start));
+    public static BigDecimal randomQty(){
 
-        Double truncatedDouble = BigDecimal.valueOf(result)
-                .setScale(2, RoundingMode.HALF_UP)
-                .doubleValue();
+        BigDecimal min= new BigDecimal("0");
+        BigDecimal max= new BigDecimal("10737418");
+        BigDecimal randomBigDecimal = min.add(new BigDecimal(Math.random()).multiply(max.subtract(min)));
+        return randomBigDecimal.setScale(2,RoundingMode.DOWN);
 
-        return truncatedDouble;
     }
+
 
 
 
@@ -109,7 +103,6 @@ public class Utils {
 
         GregorianCalendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
         long millis = cal.getTimeInMillis();
-
         return new Timestamp(millis);
     }
 
