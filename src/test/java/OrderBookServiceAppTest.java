@@ -9,6 +9,8 @@ import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 import static com.diy.Utils.Utils.*;
@@ -294,7 +296,7 @@ public class OrderBookServiceAppTest {
 
         System.out.println("________________ TestGetAveragePriceOverLevel ");
 
-        int nbrLoop = 100;
+        int nbrLoop = 50;
 
         List<Double []> listQtyPrice = new ArrayList<>();
         double numerator=0;
@@ -457,20 +459,31 @@ public class OrderBookServiceAppTest {
 
 
     @Test
-    public void TestConcurrentAddDeleteHeavyLoad() throws InterruptedException {
+    public void TestConcurrentAddReadHeavyLoad() throws InterruptedException {
 
-        System.out.println("________________ TestConcurrentAddDeleteHeavyLoad ");
+        System.out.println("________________ TestConcurrentAddReadHeavyLoad ");
 
-        int numberOfJob = 100_000; // Number of Order created
+        int numberOfJob = 2000; // Number of Order created
         int grpPerPrice=5; // number of Order under the same price
 
-        List<Double []> listQtyPrice = new ArrayList<>();
+        // using native object for easier handling
+        class Position{
+            double qty;
+            double price;
 
+            Position(double qty, double price){
+                this.qty=qty;
+                this.price=price;
+            }
+            double getQty(){return qty;}
+            double getPrice(){return price;}
+        }
+
+        List<Position> listPosition = new ArrayList<>();
 
         double price=randomPrice().doubleValue();
         double qty=randomQty().doubleValue();
         long timestamp = 1638848595;
-
 
         //1. prepare the value : Qty & Price
         for(int i=0; i<numberOfJob; i++){
@@ -479,26 +492,24 @@ public class OrderBookServiceAppTest {
                 price = randomPrice().doubleValue();
                 qty = randomQty().doubleValue();
             }
-            listQtyPrice.add(new Double[]{qty, price, });
+            listPosition.add(new Position(qty,price));
         }
 
         OrderBookManager orderBookManager = new OrderBookList();
-
 
         ExecutorService service = Executors.newFixedThreadPool(10);
         //Define the Latch
         CountDownLatch latchAdd = new CountDownLatch(numberOfJob);
         CountDownLatch latchDelete = new CountDownLatch(numberOfJob);
 
-
         //Heavy Add
         int cmpt=0;
-        for(Double[] e : listQtyPrice){
+        for(Position e : listPosition){
 
             int finalCmpt = cmpt;
 
             service.execute(() -> {
-                orderBookManager.updateOrder(toOrder("t="+timestamp+ finalCmpt +"|i=BTCUSD|p="+e[1]+"|q="+e[0]+"|s=b"));
+                orderBookManager.updateOrder(toOrder("t="+timestamp+ finalCmpt +"|i=BTCUSD|p="+e.getPrice()+"|q="+e.getQty()+"|s=b"));
                 latchAdd.countDown();
             });
 
@@ -506,29 +517,30 @@ public class OrderBookServiceAppTest {
         }
         System.out.println("cmpt="+cmpt);
 
-        cmpt=0;
-        for(Double[] e : listQtyPrice){
 
-            int finalCmpt = cmpt;
+        //Heavy Read
+        List<Map> vList= new ArrayList<>();
+        for(Position e : listPosition){
 
             service.execute(() -> {
-                orderBookManager.updateOrder(toOrder("t="+timestamp+ finalCmpt +"|i=BTCUSD|p="+e[1]+"|q=0|s=b"));
+                vList.add(orderBookManager.getVolumeWeightedPriceOverLevel("BTCUSD",Side.BUY,numberOfJob)); // read everything
                 latchDelete.countDown();
             });
-
-            cmpt++;
         }
-
 
         latchAdd.await();
         latchDelete.await();
 
+        // workout the Map pair  GroupByPrice Vs Count
+        Map<Double, Long> listPositionGrpByPrice = listPosition.stream()
+                .collect(Collectors.groupingByConcurrent(Position::getPrice, Collectors.counting()));
+        System.out.println("listPositionGrpByPrice="+listPositionGrpByPrice);
 
-        for(Double[] e : listQtyPrice){
-            assertEquals( Collections.emptyList() , orderBookManager.getOrdersAtLevel("BTCUSD", Side.BUY, StringToBigDecimal(e[1]+"")));
+        //make sure the Data added matches the Data read
+        for(Position e : listPosition){
+            assertEquals( listPositionGrpByPrice.get(e.getPrice()).intValue() , orderBookManager.getOrdersAtLevel("BTCUSD", Side.BUY, StringToBigDecimal(e.getPrice()+"")).size());
+            cmpt++;
         }
-
-
 
     }
 

@@ -34,7 +34,7 @@ public interface OrderBookManager {
      *
      * @param instrument identifier of an instrument
      * @param side either buy or sell
-     * @return the best price, or Optional.empty() if there're no orders for the instrument on this
+     * @return Optional<BigDecimal> the best price, or Optional.empty() if there're no orders for the instrument on this
      *     side
      */
     Optional<BigDecimal> getBestPrice(String instrument, Side side);
@@ -47,7 +47,7 @@ public interface OrderBookManager {
      * @param instrument identifier of an instrument
      * @param side either buy or sell
      * @param price requested price level
-     * @return all orders, or empty list if there are no orders for the instrument on this side with
+     * @return List<Order> all orders, or empty list if there are no orders for the instrument on this side with
      *     this price
      */
     List<Order> getOrdersAtLevel(String instrument, Side side, BigDecimal price);
@@ -61,7 +61,7 @@ public interface OrderBookManager {
      * @param instrument
      * @param side
      * @param level
-     * @return
+     * @return Map<BigDecimal, Set<Order>>
      */
     Map<BigDecimal, Set<Order>> getOrdersUpToLevel(String instrument, Side side, int level);
 
@@ -70,7 +70,7 @@ public interface OrderBookManager {
      * @param instrument
      * @param side
      * @param level
-     * @return
+     * @return Double
      */
     Double getAveragePriceOverLevel(String instrument, Side side, int level);
 
@@ -80,7 +80,7 @@ public interface OrderBookManager {
      * @param instrument
      * @param side
      * @param level
-     * @return
+     * @return Double
      */
     Double getTotalQtyOverLevel(String instrument, Side side, int level);
 
@@ -91,7 +91,7 @@ public interface OrderBookManager {
      * @param instrument
      * @param side
      * @param level
-     * @return
+     * @return  Map<BigDecimal,List<Double>>
      */
     Map<BigDecimal,List<Double>> getVolumeWeightedPriceOverLevel(String instrument, Side side, int level);
 
