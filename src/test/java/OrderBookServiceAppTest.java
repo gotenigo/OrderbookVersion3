@@ -4,16 +4,12 @@ import com.diy.orderbookmanager.OrderBook;
 import com.diy.orderbookmanager.OrderBookList;
 import com.diy.orderbookmanager.OrderBookManager;
 import org.junit.Test;
-
-import javax.validation.constraints.AssertTrue;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadLocalRandom;
+
 
 import static com.diy.Utils.Utils.*;
 import static org.junit.Assert.*;
@@ -384,13 +380,6 @@ public class OrderBookServiceAppTest {
     }
 
 
-    @Test
-    public void time(){
-
-        Timestamp timestamp=timestamp();
-
-        System.out.println("timestamp="+timestamp.getTime());
-    }
 
 
     @Test
