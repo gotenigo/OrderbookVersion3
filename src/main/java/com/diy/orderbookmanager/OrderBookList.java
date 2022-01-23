@@ -136,7 +136,7 @@ public class OrderBookList implements OrderBookManager  {
 
         try {
 
-            Order vOrder = orderList.stream()        // return 1 Element  (normal code running)  // return 2 Element => IllegalArgumentException // return 0 Element => NoSuchElementException
+            Order vOrder = orderList.stream()  // return 1 Element  (normal code running)  // return 2 Element => IllegalArgumentException // return 0 Element => NoSuchElementException
                     .filter(x -> x.equals(order))
                     .collect(onlyElement());
 
