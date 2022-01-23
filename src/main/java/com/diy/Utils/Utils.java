@@ -80,7 +80,7 @@ public class Utils {
     public static BigDecimal randomQty(){
 
         BigDecimal min= new BigDecimal("0");
-        BigDecimal max= new BigDecimal("10737418");
+        BigDecimal max= new BigDecimal("10737419");
         BigDecimal randomBigDecimal = min.add(new BigDecimal(Math.random()).multiply(max.subtract(min)));
         return randomBigDecimal.setScale(2,RoundingMode.DOWN);
 
@@ -91,7 +91,7 @@ public class Utils {
 
     public static BigDecimal randomPrice(){
 
-        BigDecimal min= new BigDecimal("0");
+        BigDecimal min= new BigDecimal("0.01");
         BigDecimal max= new BigDecimal("1000");
         BigDecimal randomBigDecimal = min.add(new BigDecimal(Math.random()).multiply(max.subtract(min)));
         return randomBigDecimal.setScale(2,RoundingMode.DOWN);

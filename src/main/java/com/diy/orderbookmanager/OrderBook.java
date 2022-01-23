@@ -190,10 +190,8 @@ public class OrderBook {
             numerator =numerator.add(sumPrQty);
             denominator=denominator.add(sumQty);
 
-
-            if(cmpt==level) {
-                averagePrice=numerator.divide(denominator, RoundingMode.DOWN);
-                break;
+            if(cmpt==level || cmpt==orderBook.size()) {
+                return numerator.divide(denominator, RoundingMode.DOWN);
             }
         }
 
