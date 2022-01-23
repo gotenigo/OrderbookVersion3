@@ -228,6 +228,10 @@ public class OrderBook {
     }
 
 
+
+
+
+
     /**
      *
      * @param side
@@ -236,10 +240,7 @@ public class OrderBook {
      */
     public Map<BigDecimal, List<Double> > getVolumeWeightedPriceOverLevel( Side side, int level) {
 
-
-
         Map<BigDecimal, List<Double>> volumeWeightedPrice= new LinkedHashMap<>();
-
         Map<BigDecimal, Set<Order>> orderBook = getOrderBookBySide(side);
         Iterator<Map.Entry<BigDecimal, Set<Order>>> iterator = orderBook.entrySet().iterator();
 
@@ -254,9 +255,7 @@ public class OrderBook {
                 break;
             }
         }
-
         return volumeWeightedPrice ;
-
     }
 
 
