@@ -21,7 +21,7 @@ public class Order {
     private Side side;
 
     /** limit price for the order, always positive */
-    private BigDecimal price;   // memory usage :  36 + Ceiling(log2(n)/8.0) bytes //https://stackoverflow.com/questions/2501176/java-bigdecimal-memory-usage
+    private BigDecimal price;   // memory usage :  36 + Ceiling(log2(n)/8.0) bytes
 
     /** required quantity, always positive */
     private Double quantity;  // memory usage :  36 + Ceiling(log2(n)/8.0) bytes

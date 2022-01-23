@@ -5,11 +5,9 @@ package com.diy.orderbookmanager;
 import com.diy.Side.Side;
 import com.diy.domain.Order;
 import lombok.extern.slf4j.Slf4j;
-
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-
 import static com.google.common.collect.MoreCollectors.onlyElement;
 
 @Slf4j
