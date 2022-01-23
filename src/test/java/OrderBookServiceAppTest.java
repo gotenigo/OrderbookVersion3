@@ -486,7 +486,7 @@ public class OrderBookServiceAppTest {
 
         System.out.println("________________ TestConcurrentAddReadHeavyLoad ");
 
-        int numberOfJob = 20_000; // Number of Order to create
+        int numberOfJob = 10_000; // Number of Order to create => numberOfJob will be concurrent Read & Write
         int grpPerPrice=5; // number of Order under the same price
 
         // using native object for easier handling
@@ -538,7 +538,6 @@ public class OrderBookServiceAppTest {
 
             cmpt++;
         }
-        System.out.println("cmpt="+cmpt);
 
 
         //Heavy Read
