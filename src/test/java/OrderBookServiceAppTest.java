@@ -556,7 +556,7 @@ public class OrderBookServiceAppTest {
         // workout the Map pair  GroupByPrice Vs Count
         Map<BigDecimal, Long> listPositionGrpByPrice = listPosition.stream()
                 .collect(Collectors.groupingByConcurrent(Position::getPrice, Collectors.counting()));
-        System.out.println("listPositionGrpByPrice="+listPositionGrpByPrice);
+        //System.out.println("listPositionGrpByPrice="+listPositionGrpByPrice);
 
         //make sure the Data added matches the Data read
         for(Position e : listPosition){
