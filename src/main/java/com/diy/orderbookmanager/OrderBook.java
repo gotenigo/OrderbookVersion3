@@ -71,7 +71,7 @@ public class OrderBook {
      ******/
     public boolean addOrder(Order order)
     {
-        boolean success=false;
+        boolean success;
 
         BigDecimal price = order.getPrice();
         Side side = order.getSide();
