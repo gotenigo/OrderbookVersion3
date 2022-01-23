@@ -33,7 +33,7 @@ public class OrderBookList implements OrderBookManager  {
      *
      * @author  Gothard GOTENI
      * @version 1.0
-     * @since   16/01/2022
+     * @since   23/01/2022
      *
      * @param order new order to add <br>
      * @see Order
@@ -57,8 +57,8 @@ public class OrderBookList implements OrderBookManager  {
             success=(orderBookMap.get(instrument)!=null)? true:false;
 
         }
-
         log.info("Add completed : successful =" + success);
+
         return success;
     }
 
@@ -73,12 +73,12 @@ public class OrderBookList implements OrderBookManager  {
      *
      * @author  Gothard GOTENI
      * @version 1.0
-     * @since   16/01/2022
+     * @since   23/01/2022
      *
      * Delete an existing order. Returns false if no such order exists
      *
      * @param order unique identifier of existing order
-     * @return True if the order was successfully deleted, false otherwise
+     * @return boolean True if the order was successfully deleted, false otherwise
      */
     private boolean deleteOrder(Order order) {
 
@@ -113,8 +113,16 @@ public class OrderBookList implements OrderBookManager  {
 
     /**
      *
+     *   Update the order theOrderBook each time the exchange a new OrderBook
+     *
+     *
+     * @author  Gothard GOTENI
+     * @version 1.0
+     * @since   23/01/2022
+     *
+     *
      * @param order
-     * @return
+     * @return boolean Successful or not
      */
     @Override
     public synchronized boolean updateOrder(Order order) {
@@ -165,11 +173,11 @@ public class OrderBookList implements OrderBookManager  {
      *
      * @author  Gothard GOTENI
      * @version 1.0
-     * @since   16/01/2022
+     * @since   23/01/2022
      *
      *
      * @param instrument
-     * @return
+     * @return boolean
      */
     private boolean hasInstrument(String instrument){
 
@@ -195,12 +203,12 @@ public class OrderBookList implements OrderBookManager  {
      *
      * @author  Gothard GOTENI
      * @version 1.0
-     * @since   16/01/2022
+     * @since   23/01/2022
      *
      *
      * @param instrument identifier of an instrument
      * @param side       either buy or sell
-     * @return the best price, or Optional.empty() if there're no orders for the instrument on this
+     * @return the best price Optional<BigDecimal>, or Optional.empty() if there're no orders for the instrument on this
      * side
      */
     @Override
@@ -229,7 +237,7 @@ public class OrderBookList implements OrderBookManager  {
      * @param instrument
      * @param side
      * @param level
-     * @return
+     * @return Map<BigDecimal, Set<Order>> or Collections.EMPTY_MAP
      */
     @Override
     public Map<BigDecimal, Set<Order>> getOrdersUpToLevel(String instrument, Side side, int level) {
@@ -252,7 +260,7 @@ public class OrderBookList implements OrderBookManager  {
      * @param instrument
      * @param side
      * @param level
-     * @return
+     * @return Double
      */
     @Override
     public Double getAveragePriceOverLevel(String instrument, Side side, int level) {
@@ -275,7 +283,7 @@ public class OrderBookList implements OrderBookManager  {
      * @param instrument
      * @param side
      * @param level
-     * @return
+     * @return Double
      */
     @Override
     public Double getTotalQtyOverLevel(String instrument, Side side, int level) {
@@ -296,7 +304,7 @@ public class OrderBookList implements OrderBookManager  {
      * @param instrument
      * @param side
      * @param level
-     * @return
+     * @return Map<BigDecimal, List<Double>> or Collections.EMPTY_MAP
      */
     @Override
     public Map<BigDecimal,List<Double>> getVolumeWeightedPriceOverLevel(String instrument, Side side, int level) {
@@ -325,12 +333,12 @@ public class OrderBookList implements OrderBookManager  {
      *
      * @author  Gothard GOTENI
      * @version 1.0
-     * @since   16/01/2022
+     * @since   23/01/2022
      *
      * @param instrument identifier of an instrument
      * @param side       either buy or sell
      * @param price      requested price level
-     * @return all orders, or empty list if there are no orders for the instrument on this side with
+     * @return List<Order>, or empty list if there are no orders for the instrument on this side with
      * this price
      */
     @Override
@@ -340,8 +348,6 @@ public class OrderBookList implements OrderBookManager  {
 
         if (this.hasInstrument(instrument)){
             orderList=orderBookMap.get(instrument).getOrdersAtLevel(instrument,side,price);
-
-            if(orderList==null) orderList= Collections.emptyList(); // for extra security
         }
 
         return orderList;

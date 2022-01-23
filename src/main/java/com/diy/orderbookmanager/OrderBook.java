@@ -44,8 +44,11 @@ public class OrderBook {
 
 
 
-
-
+    /**
+     *    Test if empty
+     *
+     * @return
+     */
     public boolean isEmpty(){
         if (!orderbookBid.isEmpty() || !orderbookAsk.isEmpty())
             return false;
@@ -59,12 +62,15 @@ public class OrderBook {
 
     /****
      *
+     *    => Add new Order
      *
      * @author  Gothard GOTENI
      * @version 1.0
      * @since   16/01/2022
      *
      * @param order
+     *
+     * @return boolean Successful or Not
      *
      ******/
     public boolean addOrder(Order order)
@@ -91,26 +97,22 @@ public class OrderBook {
 
 
 
-
-
-
-
     /**
      *
+     *      => Delete Order
      *
      * @author  Gothard GOTENI
      * @version 1.0
      * @since   16/01/2022
      *
-     *
      * @param order
+     * @return boolean Successful or Not
      */
     public boolean deleteOrder(Order order) {
 
         BigDecimal price = order.getPrice();
         Side side = order.getSide();
         boolean success = false;
-
 
         Map<BigDecimal, Set<Order>> orderBook = getOrderBookBySide(side);
 
@@ -119,7 +121,7 @@ public class OrderBook {
                 success=orderBook.get(price).remove(order);
 
                 if(orderBook.get(price).isEmpty()){ // if there is no Order left
-                    if(orderBook.remove(price)==null){ // then we delete the key (price)
+                    if(orderBook.remove(price)==null){ // then we delete the key (price) to free memory
                         log.error(" - orderBook -Internal Error : key  "+price+" could not be deleted successfully !");
                         success=false;
                     };
@@ -128,7 +130,6 @@ public class OrderBook {
         } else {
                 log.info("this record order "+order+" does not exist !");
         }
-
 
         return success;
     }
@@ -143,10 +144,9 @@ public class OrderBook {
      * @param instrument
      * @param side
      * @param level
-     * @return
+     * @return Map<BigDecimal, Set<Order>> or empty Map
      */
     public Map<BigDecimal, Set<Order>> getOrdersUpToLevel(String instrument, Side side, int level) {
-
 
         Map<BigDecimal, Set<Order>> ordersUpToLeve = new HashMap<>(); //simple hashMap is good enough and it boosts perf
         Map<BigDecimal, Set<Order>> orderBook = getOrderBookBySide(side);
@@ -169,7 +169,7 @@ public class OrderBook {
      *
      * @param side
      * @param level
-     * @return
+     * @return Double
      */
     public Double getAveragePriceOverLevel( Side side, int level) {
 
@@ -204,7 +204,7 @@ public class OrderBook {
      *
      * @param side
      * @param level
-     * @return
+     * @return Double
      */
     public Double getTotalQtyOverLevel( Side side, int level) {
 
@@ -236,9 +236,9 @@ public class OrderBook {
      *
      * @param side
      * @param level
-     * @return
+     * @return Map<BigDecimal, List<Double>>
      */
-    public Map<BigDecimal, List<Double> > getVolumeWeightedPriceOverLevel( Side side, int level) {
+    public Map<BigDecimal, List<Double>> getVolumeWeightedPriceOverLevel( Side side, int level) {
 
         Map<BigDecimal, List<Double>> volumeWeightedPrice= new LinkedHashMap<>();
         Map<BigDecimal, Set<Order>> orderBook = getOrderBookBySide(side);
@@ -266,11 +266,11 @@ public class OrderBook {
      *
      * @author  Gothard GOTENI
      * @version 1.0
-     * @since   16/01/2022
+     * @since   23/01/2022
      *
      *
      * @param side
-     * @return
+     * @return Map<BigDecimal,Set<Order> > : orderbookBid or orderbookAsk
      */
     private Map<BigDecimal,Set<Order> > getOrderBookBySide(Side side) {
 
@@ -291,11 +291,11 @@ public class OrderBook {
      *
      * @author  Gothard GOTENI
      * @version 1.0
-     * @since   16/01/2022
+     * @since   23/01/2022
      *
      * @param instrument
      * @param side
-     * @return
+     * @return Optional<BigDecimal>
      **/
     Optional<BigDecimal> getBestPrice(String instrument, Side side){
 
@@ -324,13 +324,13 @@ public class OrderBook {
      *
      * @author  Gothard GOTENI
      * @version 1.0
-     * @since   16/01/2022
+     * @since   23/01/2022
      *
      *
      * @param instrument
      * @param side
      * @param price
-     * @return
+     * @return Collections.emptyList() or List<Order>
      */
     List<Order> getOrdersAtLevel(String instrument, Side side, BigDecimal price) {
 
