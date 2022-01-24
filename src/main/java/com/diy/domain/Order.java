@@ -20,9 +20,11 @@ public class Order {
 
     /** limit price for the order, always positive */
     private BigDecimal price;   // memory usage :  36 + Ceiling(log2(n)/8.0) bytes
+                                // BigDecimal hit the performance a bit, but it's very accurate in calculation.
 
     /** required quantity, always positive */
     private BigDecimal quantity;  // memory usage :  36 + Ceiling(log2(n)/8.0) bytes
+                                 // BigDecimal hit the performance a bit, but it's very accurate in calculation.
 
     private Timestamp timestamp;
 
