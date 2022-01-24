@@ -17,8 +17,12 @@ public interface OrderBookManager {
 
     /**
      *
+     *
+     *   Update the order theOrderBook each time the exchange a new OrderBook
+     *
+     *
      * @param order
-     * @return
+     * @return boolean
      */
     boolean updateOrder(Order order);
 
