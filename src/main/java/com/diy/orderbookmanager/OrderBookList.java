@@ -41,7 +41,7 @@ public class OrderBookList implements OrderBookManager  {
      */
      private boolean addOrder(Order order) {
 
-        log.info("=>addOrder order called for ="+order);
+        log.debug("=>addOrder order called for ="+order);
         boolean success=false;
 
         String instrument = order.getInstrument();
@@ -57,7 +57,7 @@ public class OrderBookList implements OrderBookManager  {
             orderBookMap.put(instrument, orderBook);
             success=(orderBookMap.get(instrument)!=null)? true:false;
         }
-        log.info("Add completed : successful =" + success);
+        log.debug("Add completed : successful =" + success);
 
         return success;
     }
@@ -82,7 +82,7 @@ public class OrderBookList implements OrderBookManager  {
      */
     private boolean deleteOrder(Order order) {
 
-        log.info("=>Delete order called for ="+order);
+        log.debug("=>Delete order called for ="+order);
         boolean success = false;
 
         String instrument = order.getInstrument();
@@ -101,7 +101,7 @@ public class OrderBookList implements OrderBookManager  {
             log.info("I cant find any orderbook for Instrument under order ="+order);
         }
 
-        log.info("Delete completed : success =" + success);
+        log.debug("Delete completed : success =" + success);
         return success;
     }
 
@@ -219,7 +219,7 @@ public class OrderBookList implements OrderBookManager  {
         if (this.hasInstrument(instrument)){
             bestPrice=orderBookMap.get(instrument).getBestPrice(instrument,side);
         }
-        log.info("BestPrice="+bestPrice);
+        log.debug("BestPrice="+bestPrice);
         return bestPrice;
     }
 
