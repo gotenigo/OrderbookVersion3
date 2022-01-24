@@ -56,7 +56,6 @@ public class OrderBookList implements OrderBookManager  {
             orderBook.addOrder(order);
             orderBookMap.put(instrument, orderBook);
             success=(orderBookMap.get(instrument)!=null)? true:false;
-
         }
         log.info("Add completed : successful =" + success);
 
