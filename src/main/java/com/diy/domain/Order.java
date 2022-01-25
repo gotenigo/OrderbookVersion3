@@ -9,24 +9,24 @@ import java.sql.Timestamp;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
-public class Order {
+public final class Order {
 
 
     /** identifier of an instrument */
-    private String instrument;
+    private final String instrument;
 
     /** either buy or sell */
-    private Side side;
+    private final Side side;
 
     /** limit price for the order, always positive */
-    private BigDecimal price;   // memory usage :  36 + Ceiling(log2(n)/8.0) bytes
+    private final BigDecimal price;   // memory usage :  36 + Ceiling(log2(n)/8.0) bytes
                                 // BigDecimal hit the performance a bit, but it's very accurate in calculation.
 
     /** required quantity, always positive */
-    private BigDecimal quantity;  // memory usage :  36 + Ceiling(log2(n)/8.0) bytes
+    private final BigDecimal quantity;  // memory usage :  36 + Ceiling(log2(n)/8.0) bytes
                                  // BigDecimal hit the performance a bit, but it's very accurate in calculation.
 
-    private Timestamp timestamp;
+    private final Timestamp timestamp;
 
 
 
