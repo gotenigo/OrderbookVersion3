@@ -13,11 +13,10 @@ import java.util.stream.Collectors;
 
 
 @Slf4j
-public class OrderBook {
+public final class OrderBook {
 
-
-    private Map<BigDecimal, Set<Order>> orderbookBid;  // BigDecimal hit the performance a bit, but it's very accurate in calculation.
-    private Map<BigDecimal,Set<Order>> orderbookAsk;   // BTC being very expensive, then accuracy matters
+    private final Map<BigDecimal, Set<Order>> orderbookBid;  // BigDecimal hit the performance a bit, but it's very accurate in calculation.
+    private final Map<BigDecimal,Set<Order>> orderbookAsk;   // BTC being very expensive, then accuracy matters
     private final String Instrument;                   // in Crypto price, we have often compounding decimal point operations.
 
 

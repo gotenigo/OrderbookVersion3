@@ -1,6 +1,5 @@
 package com.diy.domain;
 
-
 import com.diy.Side.Side;
 import java.math.BigDecimal;
 import java.math.RoundingMode;

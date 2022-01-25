@@ -1,7 +1,5 @@
 package com.diy.orderbookmanager;
 
-
-
 import com.diy.Side.Side;
 import com.diy.domain.Order;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +13,6 @@ public class OrderBookList implements OrderBookManager  {
 
 
     private Map<String, OrderBook> orderBookMap;
-
 
 
 
