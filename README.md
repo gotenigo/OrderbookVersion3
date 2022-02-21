@@ -39,7 +39,7 @@ t=1638848595|i=BTCUSD|p=32.99|q=100|s=b
 <br>•	The exchange will only send valid market data, i.e. no crossed books, no out of order levels, no message field re-ordering 
 
 
-<br><br>Write a program that will consume incoming stream of order book updates (add/change/delete) and reconstruct the order book. It's perfectly fine for the market data to be read from a file.
+<br><br>We will write a program that will consume incoming stream of order book updates (add/change/delete) and reconstruct the order book. It's perfectly fine for the market data to be read from a file.
 At any point the user should be able to perform any of the operations for the given instrument and side
 
 
