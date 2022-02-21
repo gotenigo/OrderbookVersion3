@@ -1,4 +1,4 @@
-# OrderbookVersion3 - Crypto Currency -  BTC/USD   ETH/USD
+# OrderbookVersion3 - Crypto Currency -  BTC/USD  &&  ETH/USD
 
 
 <br><br>Core Technology - Task 
