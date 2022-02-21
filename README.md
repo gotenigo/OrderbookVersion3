@@ -1,5 +1,4 @@
-# OrderbookVersion3 - Crypto Currency -  BTC/USD  &&  ETH/USD
-
+# OrderbookVersion3 - Crypto Currency -  Bitcoin and Ethereum
 
 <br><br>Core Technology - Task 
 Order book is a collection of levels representing asset price and aggregated quantity sorted by the best price. It consists of 2 sides
