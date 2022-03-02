@@ -514,30 +514,49 @@ public class OrderBookServiceAppTest {
         CountDownLatch latchAdd = new CountDownLatch(numberOfJob);
         CountDownLatch latchRead = new CountDownLatch(numberOfJob);
 
+
         //Heavy Add
-        int cmpt=0;
-        for(Position e : listPosition){
+        service.execute(() -> {
 
-            int finalCmpt = cmpt;
-
-            service.execute(() -> {
+            int cmpt=0;
+            for(Position e : listPosition){
+                System.out.println(cmpt+" : Writing data.....");
+                int finalCmpt = cmpt;
                 orderBookManager.updateOrder(toOrder("t="+timestamp+ finalCmpt +"|i=BTCUSD|p="+e.getPrice()+"|q="+e.getQty()+"|s=b"));
                 latchAdd.countDown();
-            });
+                //System.out.println("latchAdd ="+latchAdd.getCount());
 
-            cmpt++;
-        }
+                /*try {
+                    Thread.sleep(2);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }*/
+
+                cmpt++;
+            }
+        });
 
 
         //Heavy Read
-        List<Map> vList= new ArrayList<>();
-        for(Position e : listPosition){
+        service.execute(() -> {
+            List<Map> vList= new ArrayList<>();
+            int cmpt=0;
+            for(Position e : listPosition){
+                System.out.println(cmpt+" : Reading data.....");
 
-            service.execute(() -> {
                 vList.add(orderBookManager.getVolumeWeightedPriceOverLevel("BTCUSD",Side.BUY,numberOfJob)); // read everything
                 latchRead.countDown();
-            });
-        }
+                //System.out.println("latchRead ="+latchRead.getCount());
+
+                /*try {
+                    Thread.sleep(1);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }*/
+
+                cmpt++;
+            }
+        });
 
         latchAdd.await();
         latchRead.await();
@@ -550,7 +569,7 @@ public class OrderBookServiceAppTest {
         //make sure the Data added matches the Data read
         for(Position e : listPosition){
             assertEquals( listPositionGrpByPrice.get(e.getPrice()).intValue() , orderBookManager.getOrdersAtLevel("BTCUSD", Side.BUY, e.getPrice()).size());
-            cmpt++;
+            //cmpt++;
         }
 
     }
@@ -570,7 +589,6 @@ public class OrderBookServiceAppTest {
     public void TestOrderBookManagerNullArg()  {
 
         System.out.println("________________ TestOrderBookManagerNullArg ");
-
         OrderBookManager orderBookManager = new OrderBookList();
         orderBookManager.updateOrder(null);
 
@@ -581,7 +599,6 @@ public class OrderBookServiceAppTest {
     public void TestOrderBookManagerGetBestPriceNullArg()  {
 
         System.out.println("________________ TestOrderBookManagerGetBestPriceNullArg ");
-
         OrderBookManager orderBookManager = new OrderBookList();
         orderBookManager.getBestPrice(null,null);
 
@@ -592,7 +609,6 @@ public class OrderBookServiceAppTest {
     public void TestOrderBookManagerGetOrdersAtLevelNullArg()  {
 
         System.out.println("________________ TestOrderBookManagerGetOrdersAtLevelNullArg ");
-
         OrderBookManager orderBookManager = new OrderBookList();
         orderBookManager.getOrdersAtLevel(null,null, new BigDecimal("0"));
 

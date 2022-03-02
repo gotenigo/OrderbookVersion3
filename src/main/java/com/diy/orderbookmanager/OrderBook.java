@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public final class OrderBook {
 
-    private final Map<BigDecimal, Set<Order>> orderbookBid;  // BigDecimal hit the performance a bit, but it's very accurate in calculation.
-    private final Map<BigDecimal,Set<Order>> orderbookAsk;   // BTC being very expensive, then accuracy matters
+    private final Map<BigDecimal, Set<Order>> orderBookBid;  // BigDecimal hit the performance a bit, but it's very accurate in calculation.
+    private final Map<BigDecimal,Set<Order>> orderBookAsk;   // BTC being very expensive, then accuracy matters
     private final String Instrument;                   // in Crypto price, we have often compounding decimal point operations.
 
 
@@ -35,8 +35,8 @@ public final class OrderBook {
             return -1;
         };
 
-        orderbookBid = new ConcurrentSkipListMap<>(ascendingPrice);  //O(log n)
-        orderbookAsk = new ConcurrentSkipListMap<>(descendingPrice);  // O(log n)
+        orderBookBid = new ConcurrentSkipListMap<>(ascendingPrice);  //O(log n)
+        orderBookAsk = new ConcurrentSkipListMap<>(descendingPrice);  // O(log n)
         this.Instrument = product;
 
         log.info("new OrderBook created for "+product+" : "+this+" !");
@@ -50,7 +50,7 @@ public final class OrderBook {
      * @return
      */
     public boolean isEmpty(){
-        if (!orderbookBid.isEmpty() || !orderbookAsk.isEmpty())
+        if (!orderBookBid.isEmpty() || !orderBookAsk.isEmpty())
             return false;
 
         return true;
@@ -245,7 +245,10 @@ public final class OrderBook {
         for( int cmpt=1;iterator.hasNext();cmpt++){
 
             Map.Entry<BigDecimal, Set<Order>> entry = iterator.next();
-            BigDecimal sum =  entry.getValue().stream().map(x ->   x.getQuantity()).reduce((e1,e2)->e1.add(e2)).get();
+            Optional<BigDecimal> sumOpt =  entry.getValue().stream().map(x ->   x.getQuantity()).reduce((e1,e2)->e1.add(e2));
+
+            BigDecimal sum = sumOpt.orElse(BigDecimal.ZERO);
+
             int count =entry.getValue().size();
             volumeWeightedPrice.put(entry.getKey(), Arrays.asList(count,sum));
 
@@ -273,8 +276,8 @@ public final class OrderBook {
     private Map<BigDecimal,Set<Order> > getOrderBookBySide(Side side) {
 
         switch(side) {
-            case BUY : return orderbookBid;
-            case SELL: return orderbookAsk;
+            case BUY : return orderBookBid;
+            case SELL: return orderBookAsk;
             default: throw new IllegalArgumentException();
         }
     }
@@ -357,8 +360,8 @@ public final class OrderBook {
     @Override
     public String toString() {
         return "OrderBook{" +
-                "orderbookBid=" + orderbookBid +
-                ", orderbookAsk=" + orderbookAsk +
+                "orderBookBid=" + orderBookBid +
+                ", orderBookAsk=" + orderBookAsk +
                 ", Instrument='" + Instrument + '\'' +
                 '}';
     }

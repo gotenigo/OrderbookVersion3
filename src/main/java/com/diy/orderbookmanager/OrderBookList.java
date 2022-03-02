@@ -38,7 +38,7 @@ public class OrderBookList implements OrderBookManager  {
      */
      private boolean addOrder(Order order) {
 
-        log.debug("=>addOrder order called for ="+order);
+        //log.debug("=>addOrder order called for ="+order);
         boolean success=false;
 
         String instrument = order.getInstrument();
@@ -54,7 +54,7 @@ public class OrderBookList implements OrderBookManager  {
             orderBookMap.put(instrument, orderBook);
             success=(orderBookMap.get(instrument)!=null)? true:false;
         }
-        log.debug("Add completed : successful =" + success);
+        //log.debug("Add completed : successful =" + success);
 
         return success;
     }
