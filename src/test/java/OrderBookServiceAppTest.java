@@ -548,6 +548,7 @@ public class OrderBookServiceAppTest {
                 latchRead.countDown();
                 //System.out.println("latchRead ="+latchRead.getCount());
 
+                //we slow down the reading a bit as we have similar space
                 /*try {
                     Thread.sleep(1);
                 } catch (InterruptedException ex) {
