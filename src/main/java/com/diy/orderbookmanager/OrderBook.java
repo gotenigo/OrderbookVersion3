@@ -35,8 +35,8 @@ public final class OrderBook {
             return -1;
         };
 
-        orderBookBid = new ConcurrentSkipListMap<>(ascendingPrice);  //O(log n)
-        orderBookAsk = new ConcurrentSkipListMap<>(descendingPrice);  // O(log n)
+        orderBookBid = new ConcurrentSkipListMap<>(ascendingPrice);  //O(log n)  // Treemap concurrent variant
+        orderBookAsk = new ConcurrentSkipListMap<>(descendingPrice);  // O(log n) // Treemap concurrent variant
         this.Instrument = product;
 
         log.info("new OrderBook created for "+product+" : "+this+" !");
