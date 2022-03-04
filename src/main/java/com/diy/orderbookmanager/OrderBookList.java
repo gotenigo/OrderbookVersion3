@@ -122,7 +122,7 @@ public class OrderBookList implements OrderBookManager  {
      * @return boolean Successful or not
      */
     @Override
-    public synchronized boolean updateOrder(Order order) {
+    public boolean updateOrder(Order order) {
 
         String instrument=order.getInstrument();
         Side side = order.getSide();
