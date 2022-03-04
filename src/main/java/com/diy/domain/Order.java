@@ -57,7 +57,7 @@ public final class Order {
         this.side = side;
         this.price = price.setScale(2, RoundingMode.DOWN);
         this.quantity = quantity.setScale(2, RoundingMode.DOWN);//BigDecimal.valueOf(quantity).setScale(2, RoundingMode.DOWN).doubleValue();
-        this.timestamp=timestamp;
+        this.timestamp=(Timestamp) timestamp.clone();
     }
 
 

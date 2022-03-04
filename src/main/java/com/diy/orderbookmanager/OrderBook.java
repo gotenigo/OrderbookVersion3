@@ -23,6 +23,7 @@ public final class OrderBook {
 
     public OrderBook(String product) {
 
+
         Comparator<BigDecimal> ascendingPrice = (p1, p2) -> {
             if (p1.compareTo(p2)==0) return 0;
             if (p1.compareTo(p2)<0) return 1;
