@@ -51,8 +51,9 @@ public final class OrderBook {
      * @return
      */
     public boolean isEmpty(){
-        if (!orderBookBid.isEmpty() || !orderBookAsk.isEmpty())
+        if (!orderBookBid.isEmpty() || !orderBookAsk.isEmpty()) {
             return false;
+        }
 
         return true;
     }

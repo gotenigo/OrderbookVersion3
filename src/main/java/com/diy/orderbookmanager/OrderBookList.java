@@ -47,12 +47,13 @@ public class OrderBookList implements OrderBookManager  {
 
             success = orderBookMap.get(instrument).addOrder(order);
 
-        } else { // if no, then we create an Orderbook for that for specific Instrument
+        } else { // if no, then we create an Orderbook for that specific Instrument
 
             OrderBook orderBook = new OrderBook(instrument);
             orderBook.addOrder(order);
-            orderBookMap.put(instrument, orderBook);
-            success=(orderBookMap.get(instrument)!=null)? true:false;
+            success=(orderBookMap.put(instrument, orderBook)==null)? true:false;
+            //orderBookMap.put(instrument, orderBook);
+            //success=(orderBookMap.get(instrument)!=null)? true:false;
         }
         //log.debug("Add completed : successful =" + success);
 
