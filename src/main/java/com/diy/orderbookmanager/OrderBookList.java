@@ -9,10 +9,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.google.common.collect.MoreCollectors.onlyElement;
 
 @Slf4j
-public class OrderBookList implements OrderBookManager  {
+public final class OrderBookList implements OrderBookManager  {
 
 
-    private Map<String, OrderBook> orderBookMap;
+    private final Map<String, OrderBook> orderBookMap;
 
 
 
