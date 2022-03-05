@@ -75,8 +75,7 @@ public final class OrderBook {
      * @return boolean Successful or Not
      *
      ******/
-    public boolean addOrder(Order order)
-    {
+    public boolean addOrder(Order order){
         boolean success;
 
         BigDecimal price = order.getPrice();
