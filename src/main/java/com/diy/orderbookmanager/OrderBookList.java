@@ -36,25 +36,34 @@ public final class OrderBookList implements OrderBookManager  {
      * @param order new order to add <br>
      * @see Order
      */
-     private boolean addOrder(Order order) {
+     private boolean addOrder(Order order) { // this Method uses Atomic processes
 
         //log.debug("=>addOrder order called for ="+order);
         boolean success=false;
 
         String instrument = order.getInstrument();
 
-        if (this.hasInstrument(instrument)) {  // do we have already an Orderbook for that Instrument ?
 
-            success = orderBookMap.get(instrument).addOrder(order);
+         OrderBook orderBookPresent = orderBookMap.computeIfPresent(instrument, (k,v)->{  // do we have already an Orderbook for that Instrument ?
 
-        } else { // if no, then we create an Orderbook for that specific Instrument
+             OrderBook orderBook = orderBookMap.get(instrument);
+             orderBook.addOrder(order);
+             return orderBook;
+         });
 
-            OrderBook orderBook = new OrderBook(instrument);
-            orderBook.addOrder(order);
-            success=(orderBookMap.put(instrument, orderBook)==null)? true:false;
-            //orderBookMap.put(instrument, orderBook);
-            //success=(orderBookMap.get(instrument)!=null)? true:false;
-        }
+
+         OrderBook orderBookAbsent = orderBookMap.computeIfAbsent(instrument , k->{  // if no, then we create an OrderBook for that specific Instrument
+
+             OrderBook orderBook = new OrderBook(instrument);
+             orderBook.addOrder(order);
+             return orderBook;
+         });
+
+
+         if (orderBookPresent!=null || orderBookAbsent!=null ){
+             success=true;
+         }
+
         //log.debug("Add completed : successful =" + success);
 
         return success;
