@@ -37,6 +37,7 @@ public final class OrderBook {
             return -1;
         };
 
+        //TreeMap
         orderBookBid = new ConcurrentSkipListMap<>(ascendingPrice);  //O(log n)  // Treemap concurrent variant
         orderBookAsk = new ConcurrentSkipListMap<>(descendingPrice);  // O(log n) // Treemap concurrent variant
         this.Instrument = product;

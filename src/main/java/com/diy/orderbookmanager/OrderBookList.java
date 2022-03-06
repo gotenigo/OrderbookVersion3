@@ -43,12 +43,12 @@ public final class OrderBookList implements OrderBookManager  {
 
         String instrument = order.getInstrument();
 
-
          OrderBook orderBookPresent = orderBookMap.computeIfPresent(instrument, (k,v)->{  // do we have already an Orderbook for that Instrument ?
 
              OrderBook orderBook = orderBookMap.get(instrument);
              orderBook.addOrder(order);
              return orderBook;
+
          });
 
 

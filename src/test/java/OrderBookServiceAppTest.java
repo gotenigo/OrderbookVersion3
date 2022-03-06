@@ -520,7 +520,9 @@ public class OrderBookServiceAppTest {
 
             int cmpt=0;
             for(Position e : listPosition){
+
                 System.out.println(cmpt+" : Writing data.....");
+
                 int finalCmpt = cmpt;
                 orderBookManager.updateOrder(toOrder("t="+timestamp+ finalCmpt +"|i=BTCUSD|p="+e.getPrice()+"|q="+e.getQty()+"|s=b"));
                 latchAdd.countDown();
@@ -542,7 +544,8 @@ public class OrderBookServiceAppTest {
             List<Map> vList= new ArrayList<>();
             int cmpt=0;
             for(Position e : listPosition){
-                System.out.println(cmpt+" : Reading data.....");
+
+               System.out.println(cmpt+" : Reading data.....");
 
                 vList.add(orderBookManager.getVolumeWeightedPriceOverLevel("BTCUSD",Side.BUY,numberOfJob)); // read everything
                 latchRead.countDown();
@@ -629,8 +632,6 @@ public class OrderBookServiceAppTest {
         System.out.println("________________ TestIllegalArgumentException ");
         Order order = toOrder("t=1638848595|i=BTCUSD|p=32.99|q=-1|s=s");
     }
-
-
 
 
 
