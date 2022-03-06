@@ -4,6 +4,7 @@ import com.diy.Side.Side;
 import com.diy.domain.Order;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.concurrent.Immutable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -75,22 +76,35 @@ public final class OrderBook {
      * @return boolean Successful or Not
      *
      ******/
-    public boolean addOrder(Order order){
-        boolean success;
+    public boolean addOrder(Order order){ // this Method uses Atomic processes
+        boolean success=false;
 
         BigDecimal price = order.getPrice();
         Side side = order.getSide();
 
-
         Map<BigDecimal, Set<Order>> orderBook = getOrderBookBySide(side);
 
-        if (orderBook.containsKey(price)) {
-            success=orderBook.get(price).add(order);
+
+        Set<Order> OrdersPresent = orderBook.computeIfPresent(price , (k,v) ->{   //Atomic Add to be Thread safe
+
             //log.debug("OrderBook ADD with existing price="+price+" => order "+order);
-        } else {
-            orderBook.put(price, Collections.newSetFromMap(new ConcurrentHashMap<>())  ); // O(log(n)) - the same thread-safe and performance guarantees as the map passed as argument
-            success =orderBook.get(price).add(order);                                      //You typically use this method to create a concurrent set from a concurrent map, because there is no ConcurrentHashSet in the API.
+            Set<Order> orderSet = orderBook.get(price);
+            orderSet.add(order);
+            return orderSet;
+        }) ;
+
+
+        Set<Order> OrdersAbsent = orderBook.computeIfAbsent(price , k ->{   //Atomic Add to be Thread safe
+
             //log.debug("OrderBook ADD with new price="+price+" => order "+order);
+            Set<Order> orderSet = Collections.newSetFromMap(new ConcurrentHashMap<>()); //  (Equivalent to HashSet) O(log(n)) - the same thread-safe and performance guarantees as the map passed as argument
+            orderSet.add(order);                                            //You typically use this method to create a concurrent set from a concurrent map, because there is no ConcurrentHashSet in the API.
+            return orderSet;
+        }) ;
+
+
+        if (OrdersAbsent!=null || OrdersPresent!=null ){
+                success=true;
         }
 
         return success;
