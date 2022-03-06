@@ -64,6 +64,7 @@ public final class OrderBookList implements OrderBookManager  {
              success=true;
          }
 
+         //log.debug("orderBookMap =" + orderBookMap);
         //log.debug("Add completed : successful =" + success);
 
         return success;

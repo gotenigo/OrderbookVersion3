@@ -87,7 +87,7 @@ public final class OrderBook {
 
         Set<Order> OrdersPresent = orderBook.computeIfPresent(price , (k,v) ->{   //Atomic Add to be Thread safe
 
-            //log.debug("OrderBook ADD with existing price="+price+" => order "+order);
+            //log.debug("computeIfPresent => OrderBook ADD with existing price="+price+" => order "+order);
             Set<Order> orderSet = orderBook.get(price);
             orderSet.add(order);
             return orderSet;
@@ -96,7 +96,7 @@ public final class OrderBook {
 
         Set<Order> OrdersAbsent = orderBook.computeIfAbsent(price , k ->{   //Atomic Add to be Thread safe
 
-            //log.debug("OrderBook ADD with new price="+price+" => order "+order);
+            //log.debug("computeIfAbsent => OrderBook ADD with new price="+price+" => order "+order);
             Set<Order> orderSet = Collections.newSetFromMap(new ConcurrentHashMap<>()); //  (Equivalent to HashSet) O(log(n)) - the same thread-safe and performance guarantees as the map passed as argument
             orderSet.add(order);                                            //You typically use this method to create a concurrent set from a concurrent map, because there is no ConcurrentHashSet in the API.
             return orderSet;
