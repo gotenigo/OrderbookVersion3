@@ -363,7 +363,7 @@ public final class OrderBook {
             Map<BigDecimal, Set<Order>> orderBook = getOrderBookBySide(side);
 
             if (orderBook.containsKey(price)) {
-                orderList = orderBook.get(price).stream().collect(Collectors.toList());
+                orderList = orderBook.get(price).stream().collect(Collectors.toList()); // convert Set to List
             }else{
                 log.info("No order at Price level "+price+" under Side="+side+" and Instrument="+Instrument);
             }
