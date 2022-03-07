@@ -153,8 +153,8 @@ public final class OrderBookList implements OrderBookManager  {
         List<Order> orderList=getOrdersAtLevel(instrument, side, price);
 
         try {
-
-            Order vOrder = orderList.stream()  // return 1 Element  (normal code running)  // return 2 Element => IllegalArgumentException // return 0 Element => NoSuchElementException
+                                                // we pick up the order we are looking for
+            Order vOrder = orderList.stream()  // return 1 Element  ( Expected behaviour )  // return 2 Element => IllegalArgumentException // return 0 Element => NoSuchElementException
                     .filter(x -> x.equals(order))
                     .collect(onlyElement());
 
