@@ -137,20 +137,30 @@ public final class OrderBook {
 
         Map<BigDecimal, Set<Order>> orderBook = getOrderBookBySide(side);
 
-        if (orderBook.containsKey(price)) {
 
-            success=orderBook.get(price).remove(order);
+        Set<Order> OrdersPresent = orderBook.computeIfPresent(price , (k,v) ->{   //Atomic Add to be Thread safe
 
-            if(orderBook.get(price).isEmpty()){ // if there is no Order left
-                if(orderBook.remove(price)==null){ // then we delete the key (price) to free memory
-                    log.error(" - orderBook -Internal Error : key  "+price+" could not be deleted successfully !");
-                    success=false;
-                };
+            Set<Order> orderSet = orderBook.get(price);
+            orderSet.remove(order);
+            return orderSet;
+        }) ;
+
+
+        if (OrdersPresent.isEmpty()) { // if there is no Orderbook left
+
+            success = true;
+            if (orderBook.remove(price) == null) { // then we delete the key (price)
+                log.error(" - orderBook -Internal Error : key  "+price+" could not be deleted successfully !");
+                success = false;
             }
-
-        } else {
+        }else if (OrdersPresent == null){
+            success = false;
             log.info("this record order "+order+" does not exist !");
+        }else{
+            success = true;
         }
+
+
 
         return success;
     }
