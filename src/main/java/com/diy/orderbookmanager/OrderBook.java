@@ -71,7 +71,7 @@ public final class OrderBook {
 
     /****
      *
-     *    => Add new Order
+     *    => Add new Order in Atomic way
      *
      * @author  Gothard GOTENI
      * @version 1.0
@@ -120,7 +120,7 @@ public final class OrderBook {
 
     /**
      *
-     *      => Delete Order
+     *      => Delete Order  in Atomic way
      *
      * @author  Gothard GOTENI
      * @version 1.0

@@ -23,7 +23,7 @@ public final class OrderBookList implements OrderBookManager  {
 
 
     /**
-     * Add new order
+     * Add new order  in Atomic way
      *
      * <p>Orders for the same instrument, on the same side, with the same price should be kept in the
      * order as they arrive
@@ -79,11 +79,14 @@ public final class OrderBookList implements OrderBookManager  {
 
     /**
      *
+     *  Delete an existing order  in Atomic way
+     *
+     *
      * @author  Gothard GOTENI
      * @version 1.0
      * @since   23/01/2022
      *
-     * Delete an existing order. Returns false if no such order exists
+     * Delete an existing order . Returns false if no such order exists
      *
      * @param order unique identifier of existing order
      * @return boolean True if the order was successfully deleted, false otherwise
