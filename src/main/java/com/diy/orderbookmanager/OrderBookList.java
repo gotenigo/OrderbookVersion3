@@ -93,23 +93,34 @@ public final class OrderBookList implements OrderBookManager  {
         log.debug("=>Delete order called for ="+order);
         boolean success = false;
 
+
         String instrument = order.getInstrument();
 
-        if (this.hasInstrument(instrument)) {
-            success = orderBookMap.get(instrument).deleteOrder(order);
 
-            if(orderBookMap.get(instrument).isEmpty()){ // if there is no Orderbook left
-                if(orderBookMap.remove(instrument)==null){ // then we delete the key (price)
-                    log.error(" - orderBookList -Internal Error : key  "+instrument+" could not be deleted successfully !");
-                    success=false;
-                };
+        OrderBook orderBookPresent = orderBookMap.computeIfPresent(instrument, (k,v)->{  // do we have already an Orderbook for that Instrument ?
+
+            OrderBook orderBook = orderBookMap.get(instrument);
+            orderBook.deleteOrder(order);
+            return orderBook;
+
+        });
+
+
+        if (orderBookPresent.isEmpty()) { // if there is no Orderbook left
+
+            success = true;
+            if (orderBookMap.remove(instrument) == null) { // then we delete the key (price)
+                log.error(" - orderBookList -Internal Error : key  " + instrument + " could not be deleted successfully !");
+                success = false;
             }
-
+        }else if (orderBookPresent == null){
+            success = false;
+            log.info("I cant find any orderBook with key="+instrument+" for order ="+order);
         }else{
-            log.info("I cant find any orderbook for Instrument under order ="+order);
+            success = true;
+            log.debug("Delete completed : success =" + success);
         }
 
-        log.debug("Delete completed : success =" + success);
         return success;
     }
 
