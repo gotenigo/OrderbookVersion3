@@ -57,7 +57,13 @@ public interface OrderBookManager {
     List<Order> getOrdersAtLevel(String instrument, Side side, BigDecimal price);
 
 
-
+    /********************
+     *
+     * getFullOrderBook
+     *
+     * @return List < <BigDecimal, Set<Order>> >
+     */
+    Map< String , List<Map <BigDecimal,Set<Order>>> >  getFullOrderBook();
 
 
     /**

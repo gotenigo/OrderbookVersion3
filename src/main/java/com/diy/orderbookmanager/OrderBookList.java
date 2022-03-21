@@ -104,24 +104,28 @@ public final class OrderBookList implements OrderBookManager  {
 
             OrderBook orderBook = orderBookMap.get(instrument);
             orderBook.deleteOrder(order);
+            log.debug(" ! State of the orderBook before finalize the Delete ="+orderBook);
             return orderBook;
 
         });
 
 
-        if (orderBookPresent.isEmpty()) { // if there is no Orderbook left
+        if (orderBookPresent.isEmpty()) { // if there is no OrderBook left
 
-            success = true;
+
             if (orderBookMap.remove(instrument) == null) { // then we delete the key (price)
                 log.error(" - orderBookList -Internal Error : key  " + instrument + " could not be deleted successfully !");
                 success = false;
             }
+            success = true;
+            log.info("Delete Order + key removal completed : success =" + success);
+
         }else if (orderBookPresent == null){
             success = false;
             log.info("I cant find any orderBook with key="+instrument+" for order ="+order);
         }else{
             success = true;
-            log.debug("Delete completed : success =" + success);
+            log.info("Delete Order completed : success =" + success);
         }
 
         return success;
@@ -166,6 +170,7 @@ public final class OrderBookList implements OrderBookManager  {
                 return false;
             }
 
+
             if (order.getQuantity().signum() > 0) { //•	If the quantity is not zero it means order book level at specified price needs to be updated (or inserted if it was not there)
                 if (!deleteOrder(order)) return false;
                 if (!addOrder(order)) return false;
@@ -177,7 +182,12 @@ public final class OrderBookList implements OrderBookManager  {
             log.error(" ! Internal Error, you cant have duplicate 'unique' Element in the orderBookMap :"+ orderBookMap);
             throw e;
         } catch (NoSuchElementException  e) {  //stream is empty
-            if (!addOrder(order)) return false; //  We add order if it does not exist
+
+            if(order.getQuantity().signum() >0) {
+                if (!addOrder(order)) return false; //  We add order if it does not exist
+            }else{
+                log.info("ignored. You cant add an order with Qty<=0 (you sent '"+order.getQuantity()+"')");
+            }
 
         }
 
@@ -375,8 +385,31 @@ public final class OrderBookList implements OrderBookManager  {
         return orderList;
     }
 
+    /********************
+     *
+     * getFullOrderBook
+     *
+     * @return Map<BigDecimal, Set < Order>> []
+     */
+    @Override
+    public Map< String , List<Map <BigDecimal,Set<Order>>> >  getFullOrderBook() {
 
+        Map< String , List<Map <BigDecimal,Set<Order>>> >  orderBookList = new HashMap<>();
 
+        orderBookMap.forEach((k,v)->{
+
+            Map<BigDecimal, Set<Order>> orderBookBid =v.getOrderBookBySide(Side.BUY);
+            Map<BigDecimal, Set<Order>> orderBookAsk=v.getOrderBookBySide(Side.SELL);
+
+            orderBookList.put(k,Arrays.asList(orderBookBid,orderBookAsk) );
+
+        });
+
+        log.debug("FullOrderBook="+orderBookList);
+
+        return orderBookList;
+
+    }
 
 
     @Override

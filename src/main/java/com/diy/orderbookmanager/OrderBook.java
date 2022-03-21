@@ -304,7 +304,7 @@ public final class OrderBook {
      * @param side
      * @return Map<BigDecimal,Set<Order> > : orderbookBid or orderbookAsk
      */
-    private Map<BigDecimal,Set<Order> > getOrderBookBySide(Side side) {
+    public Map<BigDecimal,Set<Order> > getOrderBookBySide(Side side) {
 
         switch(side) {
             case BUY : return orderBookBid;
@@ -385,9 +385,6 @@ public final class OrderBook {
     }
 
 
-
-
-
     @Override
     public String toString() {
         return "OrderBook{" +
@@ -396,8 +393,6 @@ public final class OrderBook {
                 ", Instrument='" + Instrument + '\'' +
                 '}';
     }
-
-
 
 
 }

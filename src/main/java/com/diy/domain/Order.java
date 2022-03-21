@@ -28,7 +28,6 @@ public final class Order {
     private final Timestamp timestamp;
 
 
-
     /**
      * Copying ctor
      *
@@ -74,8 +73,9 @@ public final class Order {
     public BigDecimal getQuantity() {
         return quantity;
     }
-
-
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -118,6 +118,22 @@ public class OrderBookServiceAppTest {
     }
 
 
+    @Test
+    public void TestOrderBookManagerSimpleAddWithZeroQty() {
+
+        System.out.println("________________ TestOrderBookManagerSimpleAdd");
+
+        OrderBookManager orderBookManager = new OrderBookList();
+        Order order = toOrder("t=1638848595|i=BTCUSD|p=32.99|q=0|s=b"); // create an Order
+        boolean successState = orderBookManager.updateOrder(order);  // perform ADD
+
+        System.out.println("orderBookManager.orderBookManager() ="+orderBookManager.getFullOrderBook());
+
+        assertTrue(successState);
+
+    }
+
+
 
     @Test
     public void TestOrderBookManagerSimpleDelete() {
@@ -261,6 +277,9 @@ public class OrderBookServiceAppTest {
         orderList = orderBookManager.getOrdersAtLevel("BTCUSD", Side.SELL, StringToBigDecimal("32.99"));
 
         assertEquals( 2, orderList.size());  // we expect data under SELL
+
+        orderBookManager.getFullOrderBook();
+
 
     }
 
