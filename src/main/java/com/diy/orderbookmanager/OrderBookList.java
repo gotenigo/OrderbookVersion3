@@ -187,6 +187,7 @@ public final class OrderBookList implements OrderBookManager  {
                 if (!addOrder(order)) return false; //  We add order if it does not exist
             }else{
                 log.info("ignored. You cant add an order with Qty<=0 (you sent '"+order.getQuantity()+"')");
+                return false;
             }
 
         }
