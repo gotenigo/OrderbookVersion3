@@ -5,6 +5,7 @@ import com.diy.domain.Order;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.ThreadSafe;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 
 @Slf4j
+@ThreadSafe
 public final class OrderBook {
 
     private final Map<BigDecimal, Set<Order>> orderBookBid;  // BigDecimal hit the performance a bit, but it's very accurate in calculation.
@@ -27,14 +29,22 @@ public final class OrderBook {
 
 
         Comparator<BigDecimal> ascendingPrice = (p1, p2) -> {
-            if (p1.compareTo(p2)==0) return 0;
-            if (p1.compareTo(p2)<0) return 1;
+            if (p1.compareTo(p2)==0) {
+                return 0;
+            }
+            if (p1.compareTo(p2)<0) {
+                return 1;
+            }
             return -1;
         };
 
         Comparator<BigDecimal> descendingPrice = (p1,p2) -> {
-            if (p1.compareTo(p2)==0) return 0;
-            if (p1.compareTo(p2)>0) return 1;
+            if (p1.compareTo(p2)==0) {
+                return 0;
+            }
+            if (p1.compareTo(p2)>0) {
+                return 1;
+            }
             return -1;
         };
 
@@ -188,8 +198,9 @@ public final class OrderBook {
             Map.Entry<BigDecimal, Set<Order>> entry = iterator.next();
             ordersUpToLeve.put(entry.getKey(),entry.getValue());
 
-            if(cmpt==level)
+            if(cmpt==level) {
                 break;
+            }
         }
 
         return ordersUpToLeve ;
