@@ -3,12 +3,16 @@ package com.diy.orderbookmanager;
 import com.diy.Side.Side;
 import com.diy.domain.Order;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.annotation.concurrent.ThreadSafe;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import static com.google.common.collect.MoreCollectors.onlyElement;
 
+
 @Slf4j
+@ThreadSafe
 public final class OrderBookList implements OrderBookManager  {
 
 
@@ -172,10 +176,12 @@ public final class OrderBookList implements OrderBookManager  {
 
 
             if (order.getQuantity().signum() > 0) { //•	If the quantity is not zero it means order book level at specified price needs to be updated (or inserted if it was not there)
-                if (!deleteOrder(order)) return false;
-                if (!addOrder(order)) return false;
+                if (!deleteOrder(order)) {return false;}
+                if (!addOrder(order)) {
+                    return false;
+                }
             } else if (order.getQuantity().compareTo(BigDecimal.ZERO) == 0) { //•	If the quantity is zero it means the order book level at specified price must be removed from the book
-                if (!deleteOrder(order)) return false;
+                if (!deleteOrder(order)) {return false;}
             }
 
         } catch (IllegalArgumentException  e) { //two or more elements
@@ -184,7 +190,9 @@ public final class OrderBookList implements OrderBookManager  {
         } catch (NoSuchElementException  e) {  //stream is empty
 
             if(order.getQuantity().signum() >0) {
-                if (!addOrder(order)) return false; //  We add order if it does not exist
+                if (!addOrder(order)) {
+                    return false; //  We add order if it does not exist
+                }
             }else{
                 log.info("ignored. You cant add an order with Qty<=0 (you sent '"+order.getQuantity()+"')");
                 return false;
