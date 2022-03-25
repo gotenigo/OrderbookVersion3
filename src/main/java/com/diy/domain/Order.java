@@ -82,14 +82,24 @@ public final class Order {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Order order = (Order) o;
 
-        if (! (price.compareTo(order.price)==0)) return false; // same price
-        if (!instrument.equals(order.instrument)) return false;// same instrument
-        if (timestamp != null ? !timestamp.equals(order.timestamp) : order.timestamp != null) return false; // null or same timestamp
+        if (! (price.compareTo(order.price)==0)) {
+            return false; // same price
+        }
+        if (!instrument.equals(order.instrument)) {
+            return false;// same instrument
+        }
+        if (timestamp != null ? !timestamp.equals(order.timestamp) : order.timestamp != null) {
+            return false; // null or same timestamp
+        }
         return side == order.side; // same side
     }
 
