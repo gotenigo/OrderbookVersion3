@@ -129,7 +129,7 @@ public class OrderBookServiceAppTest {
 
         System.out.println("orderBookManager.orderBookManager() ="+orderBookManager.getFullOrderBook());
 
-        assertTrue(successState);
+        assertTrue(!successState);
 
     }
 
